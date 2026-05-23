@@ -30,6 +30,22 @@ Use this skill when the user wants to generate structured notes, explanations, a
   ```bash
   python scripts/notion_helper.py add "Practice: [Topic]" "Not started"
   ```
+- [ ] **7. Generate Checklist & Sync to Google Drive**: Create the assignment checklist and upload all three artifacts:
+  ```bash
+  # Generate checklist and sync it
+  python scripts/checklist_generator.py \
+      --topic "[Topic Name]" \
+      --course "[Course]" \
+      --items "[Task 1],[Task 2],[Task 3]" \
+      --drive-sync
+
+  # Sync study sheet + code file to Drive
+  python scripts/gdrive_helper.py sync \
+      --course "[Course]" \
+      --topic "[Topic Name]" \
+      --files "study/[Course]/[topic-dashed].md,study/[Course]/[topic-dashed].[ext]"
+  ```
+  Files are uploaded to `My Drive/AIOS/Study/[Course]/`. Re-runs update existing files — no duplicates.
 
 ---
 
@@ -85,6 +101,35 @@ domain_reputations:
   geeksforgeeks.org: "MEDIUM"
 ```
 Do not hardcode query string arrays or domain weights in python files.
+
+---
+
+## 5. Google Drive Sync
+
+Study artifacts are automatically synced to `My Drive/AIOS/Study/<course>/` after each session.
+
+### Drive Folder Structure
+```
+My Drive/
+└── AIOS/
+    └── Study/
+        ├── CS50/
+        │   ├── <topic-dashed>.md          ← Study sheet
+        │   ├── <topic-dashed>.<ext>       ← Reference code
+        │   └── <topic-dashed>-checklist.md ← Assignment checklist
+        └── ...other courses
+```
+
+### Commands
+
+| Command | Purpose |
+|---|---|
+| `gdrive_helper.py sync --course X --topic Y --files a,b` | Upload/update specific files |
+| `checklist_generator.py --topic X --course Y --items "..." --drive-sync` | Generate checklist + sync |
+| `study_helper.py ... --drive-sync` | Sync already-generated topic files |
+
+### Re-auth Note
+If Drive sync throws a scope error, delete `token.json` and re-run — a browser login will appear once to approve the `drive.file` permission.
 
 ---
 

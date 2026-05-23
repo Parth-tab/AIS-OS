@@ -20,6 +20,7 @@ Read `references/3ms-framework.md` once. It's how Parth thinks about AI work. Mi
 - `/study-dork` — Run academic dork searches for CS resources.
 - `/study-map` — Map class structures and file dependencies in local directories.
 - `/study-verify` — Validate domain reputation, availability, and archives of study links.
+- `/study-sync` — Sync generated study artifacts (notes, code, checklist) to Google Drive `AIOS/Study/<course>/`. Run after `/study` completes, or pass `--drive-sync` to `study_helper.py` directly.
 - `/recon` — Runs the OSINT reconnaissance and investigation playbook (`investigating-osint`).
 - `/dork` — Generates advanced Google search operator queries for intelligence gathering.
 
@@ -55,7 +56,7 @@ Match the register in `references/voice.md`. Casual but professional. Short sent
 - **Communication**: WhatsApp, Telegram
 - **Project / task tracking**: In-head (considering Notion)
 - **Meeting intelligence**: None
-- **Knowledge / files**: Google Drive
+- **Knowledge / files**: Google Drive (active — study notes, code & checklists auto-synced to `AIOS/Study/` after each `/study` session)
 
 ## How you work with me
 

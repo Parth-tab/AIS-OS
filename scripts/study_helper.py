@@ -169,6 +169,11 @@ def main():
     parser.add_argument("--interactive", action="store_true", help="Prompt for manual paste")
     parser.add_argument("--dork", action="store_true", help="Perform academic dork searches")
     parser.add_argument("--map-dir", help="Directory path to scan and map C++ classes")
+    parser.add_argument(
+        "--drive-sync",
+        action="store_true",
+        help="After context is saved, sync study artifacts to Google Drive AIOS/Study/<course>/",
+    )
     args = parser.parse_args()
 
     workspace_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -228,6 +233,38 @@ def main():
         json.dump(context_data, f, indent=2, ensure_ascii=False)
     
     print(f"\nConsolidated context successfully written to: {output_path}")
+
+    # 7. Optional: Sync existing study artifacts to Google Drive
+    # The SKILL generates .md and code files AFTER this script runs.
+    # Pass --drive-sync to have the SKILL call gdrive_helper directly,
+    # OR re-run this script with --drive-sync after the SKILL finishes.
+    if args.drive_sync:
+        import re as _re
+        topic_slug = _re.sub(r'[\s_]+', '-', args.topic.lower().strip())
+        topic_slug = _re.sub(r'[^\w-]', '', topic_slug)
+        course_dir = os.path.join(workspace_root, 'study', args.course)
+
+        # Collect any already-generated artifact files for this topic
+        candidate_extensions = [".md", ".c", ".cpp", ".py", ".h"]
+        files_to_sync = []
+        for ext in candidate_extensions:
+            candidate = os.path.join(course_dir, f"{topic_slug}{ext}")
+            if os.path.isfile(candidate):
+                files_to_sync.append(candidate)
+        # Also include checklist if it exists
+        checklist_path = os.path.join(course_dir, f"{topic_slug}-checklist.md")
+        if os.path.isfile(checklist_path):
+            files_to_sync.append(checklist_path)
+
+        if files_to_sync:
+            sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+            from gdrive_helper import sync_study_artifacts
+            sync_study_artifacts(args.course, args.topic, files_to_sync)
+        else:
+            print(
+                "[Drive Sync] No study files found for this topic yet.\n"
+                "  Generate the study sheet first (via /study skill), then re-run with --drive-sync."
+            )
 
 if __name__ == "__main__":
     main()
