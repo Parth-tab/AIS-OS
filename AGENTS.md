@@ -45,6 +45,7 @@ AIS-OS/
 ├── decisions/log.md         # Append-only decision record
 ├── archives/                # Old content — move here, never delete
 ├── study/                   # Generated study outputs (gitignored: temp_context.json, cache/)
+│   └── templates/           # Skeleton templates; agent fills {{TOKEN}} placeholders
 ├── connections.md           # Registry of every connected system
 ├── aios-intake.md           # Onboarding intake form
 ├── GEMINI.md                # Gemini CLI entry point and slash command registry
@@ -62,6 +63,8 @@ AIS-OS/
 - `context/` — Personal context about Parth. **Never auto-generate into this folder.** Only `/onboard` writes here.
 - `context/courses/` — One `.md` file per course (e.g., `cs50.md`). File name must match the `--course` argument to `study_helper.py` (lowercase, underscores for spaces).
 - `study/` — Generated outputs only. `temp_context.json` and `cache/` are gitignored.
+- `study/templates/` — Read-only skeleton files. See `study/templates/README.md` for token reference.
+  **Never save topic-specific content here.** Copy → fill → write to `study/<course>/`.
 - `references/` — Read-only reference files. Never overwrite; append or archive.
 - `decisions/log.md` — Append-only. Never edit past entries. Add new ones at the bottom.
 - `archives/` — Graveyard for retired files. Move here, never delete.

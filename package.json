@@ -1,0 +1,24 @@
+{
+  "name": "ais-os",
+  "version": "1.0.0",
+  "description": "A free, MIT-licensed starter kit that turns Antigravity into your personal **AI Operating System (AIOS)**. Audience: anyone building automations — solopreneurs, small business operators, managers, creators, AI consultants. Pairs with a companion masterclass video.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Parth-tab/AIS-OS.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Parth-tab/AIS-OS/issues"
+  },
+  "homepage": "https://github.com/Parth-tab/AIS-OS#readme",
+  "dependencies": {
+    "puppeteer-core": "^25.0.4"
+  }
+}

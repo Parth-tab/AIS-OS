@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Paathshala — Microsoft AI Skills Yatra Planner</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.45);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-yellow: #ffb900;
+            --accent-cyan: #06b6d4;
+            --font-display: 'Outfit', sans-serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(at 10% 20%, rgba(30, 41, 59, 0.5) 0px, transparent 50%),
+                radial-gradient(at 90% 80%, rgba(15, 23, 42, 0.8) 0px, transparent 50%);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            min-height: 100vh;
+            padding: 2rem 1.5rem;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        h1 {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #ffb900, #ff8c00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle-area {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .subtitle-title {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+        }
+
+        .subtitle-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Progress Dashboard */
+        .progress-dashboard {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .overall-progress-container {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .progress-label {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .progress-bar-bg {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 9999px;
+            height: 12px;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .progress-bar-fill {
+            background: linear-gradient(90deg, var(--accent-yellow), #ff8c00);
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .stats-grid {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .stat-box {
+            text-align: center;
+        }
+
+        .stat-val {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent-yellow);
+        }
+
+        .stat-lbl {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* 3-Column Grid */
+        .columns-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .column-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .column-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        .column-header {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .badge {
+            display: inline-block;
+            font-family: var(--font-display);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.25rem 0.6rem;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+            color: #000;
+        }
+
+        .column-title {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        /* Course Item */
+        .course-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            transition: border-color 0.2s ease;
+        }
+
+        .course-item:hover {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .course-summary {
+            padding: 1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .course-info {
+            flex: 1;
+            padding-right: 0.75rem;
+        }
+
+        .course-level {
+            font-size: 0.75rem;
+            color: var(--accent-yellow);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.15rem;
+        }
+
+        .course-name {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        .course-meta {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .course-link {
+            color: var(--accent-cyan);
+            text-decoration: none;
+        }
+
+        .course-link:hover {
+            text-decoration: underline;
+        }
+
+        .progress-donut-container {
+            width: 36px;
+            height: 36px;
+            position: relative;
+        }
+
+        /* Expanding Details */
+        .course-details {
+            display: none;
+            padding: 0 1rem 1rem 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .unit-list {
+            list-style: none;
+            margin-top: 0.5rem;
+        }
+
+        .unit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            padding: 0.35rem 0;
+            font-size: 0.85rem;
+        }
+
+        .unit-item.module-header {
+            font-weight: 600;
+            color: var(--accent-cyan);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            padding-bottom: 0.15rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .unit-item input[type="checkbox"] {
+            margin-top: 0.2rem;
+            cursor: pointer;
+            accent-color: var(--accent-yellow);
+        }
+
+        .unit-title {
+            color: var(--text-muted);
+            transition: color 0.2s ease;
+        }
+
+        .unit-item input[type="checkbox"]:checked + .unit-title {
+            color: var(--text-main);
+            text-decoration: line-through;
+        }
+
+        /* Donut SVG styling */
+        svg.donut {
+            transform: rotate(-90deg);
+        }
+
+        circle.donut-ring {
+            stroke: rgba(255, 255, 255, 0.05);
+        }
+
+        circle.donut-segment {
+            stroke: var(--accent-yellow);
+            transition: stroke-dashoffset 0.3s ease;
+        }
+
+        .course-item.open .course-details {
+            display: block;
+        }
+        
+        .arrow-indicator {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            transition: transform 0.2s ease;
+        }
+        
+        .course-item.open .arrow-indicator {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI Paathshala</h1>
+            <div class="subtitle-area">
+                <div class="subtitle-title">1. Start Learning AI and Unlock Your Digital Badges</div>
+                <div class="subtitle-desc">
+                    <strong>Summer Sprint (6-Day Plan):</strong> Since you are on summer break, we have accelerated your learning schedule to 3-4 hours a day. Complete this 18-hour Microsoft AI Skills Yatra curriculum in just 6 days!
+                </div>
+            </div>
+        </header>
+
+        <!-- Progress Dashboard -->
+        <div class="progress-dashboard">
+            <div class="overall-progress-container">
+                <div class="progress-label">
+                    <span>Overall Yatra Progress</span>
+                    <span id="overall-pct">0%</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="overall-fill"></div>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-val" id="units-completed">0/0</div>
+                    <div class="stat-lbl">Units Completed</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-val" id="hours-left">18.0</div>
+                    <div class="stat-lbl">Hours Left</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3-Column Grid -->
+        <div class="columns-grid">
+    
+            <!-- Column: AI-Powered Work -->
+            <div class="column-card">
+                <div class="column-header">
+                    <span class="badge" style="background-color: #f59e0b;">Copilot</span>
+                    <div class="column-title">AI-Powered Work</div>
+                </div>
+                <div class="courses-list">
+        
+                    <!-- Course Card -->
+                    <div class="course-item" id="course-learn.wwl.get-started-microsoft-365-copilot-business-chat">
+                        <div class="course-summary" onclick="toggleDetails(this)">
+                            <div class="course-info">
+                                <div class="course-level">Day 1 Target</div>
+                                <div class="course-name">Get started with Microsoft 365 Copilot Chat</div>
+                                <div class="course-meta"><span>⏱️ 24 mins</span><span><a class="course-link" href="file:///E:/AIOS/AIS-OS/study/AI_Skills_Yatra/Copilot/1_get_started_copilot_chat.md">📋 Checklist</a></span></div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div class="progress-donut-container">
+                                    <svg width="36" height="36" viewBox="0 0 36 36" class="donut">
+                                        <circle class="donut-ring" cx="18" cy="18" r="15.915" fill="transparent" stroke-width="3"></circle>
+                                        <circle class="donut-segment" cx="18" cy="18" r="15.915" fill="transparent" stroke-width="3" 
+                                                stroke-dasharray="0 100" stroke-dashoffset="0" id="donut-fill-learn.wwl.get-started-microsoft-365-copilot-business-chat"></circle>
+                                    </svg>
+                                </div>
+                                <span class="arrow-indicator">▼</span>
+                            </div>
+                        </div>
+                        <div class="course-details">
+                            <ul class="unit-list">
+                                            <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.get-started-microsoft-365-copilot-business-chat.introduction" onchange="updateProgress()" data-course="course-learn.wwl.get-started-microsoft-365-copilot-business-chat" data-duration="3.4285714285714284">
+                                    <span class="unit-title">Introduction</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.get-started-microsoft-365-copilot-business-chat.understand-microsoft-365-copilot-chat" onchange="updateProgress()" data-course="course-learn.wwl.get-started-microsoft-365-copilot-business-chat" data-duration="3.4285714285714284">
+                                    <span class="unit-title">Understand Microsoft 365 Copilot Chat</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.get-started-microsoft-365-copilot-business-chat.access-microsoft-365-copilot-chat" onchange="updateProgress()" data-course="course-learn.wwl.get-started-microsoft-365-copilot-business-chat" data-duration="3.4285714285714284">
+                                    <span class="unit-title">Access Microsoft 365 Copilot Chat</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.get-started-microsoft-365-copilot-business-chat.utilize-microsoft-365-copilot-chat" onchange="updateProgress()" data-course="course-learn.wwl.get-started-microsoft-365-copilot-business-chat" data-duration="3.4285714285714284">
+                                    <span class="unit-title">Utilize Microsoft 365 Copilot Chat</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.get-started-microsoft-365-copilot-business-chat.keep-your-data-safe-while-use-copilot-chat" onchange="updateProgress()" data-course="course-learn.wwl.get-started-microsoft-365-copilot-business-chat" data-duration="3.4285714285714284">
+                                    <span class="unit-title">Keep your data safe while using Copilot Chat</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.get-started-microsoft-365-copilot-business-chat.knowledge-check" onchange="updateProgress()" data-course="course-learn.wwl.get-started-microsoft-365-copilot-business-chat" data-duration="3.4285714285714284">
+                                    <span class="unit-title">Module assessment</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.get-started-microsoft-365-copilot-business-chat.summary" onchange="updateProgress()" data-course="course-learn.wwl.get-started-microsoft-365-copilot-business-chat" data-duration="3.4285714285714284">
+                                    <span class="unit-title">Summary</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+            
+                    <!-- Course Card -->
+                    <div class="course-item" id="course-learn.explore-microsoft-copilot-business-users">
+                        <div class="course-summary" onclick="toggleDetails(this)">
+                            <div class="course-info">
+                                <div class="course-level">Day 1 Target</div>
+                                <div class="course-name">Work smarter with AI using Microsoft Copilot</div>
+                                <div class="course-meta"><span>⏱️ 65 mins</span><span><a class="course-link" href="file:///E:/AIOS/AIS-OS/study/AI_Skills_Yatra/Copilot/2_work_smarter_copilot.md">📋 Checklist</a></span></div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div class="progress-donut-container">
+                                    <svg width="36" height="36" viewBox="0 0 36 36" class="donut">
+                                        <circle class="donut-ring" cx="18" cy="18" r="15.915" fill="transparent" stroke-width="3"></circle>
+                                        <circle class="donut-segment" cx="18" cy="18" r="15.915" fill="transparent" stroke-width="3" 
+                                                stroke-dasharray="0 100" stroke-dashoffset="0" id="donut-fill-learn.explore-microsoft-copilot-business-users"></circle>
+                                    </svg>
+                                </div>
+                                <span class="arrow-indicator">▼</span>
+                            </div>
+                        </div>
+                        <div class="course-details">
+                            <ul class="unit-list">
+                                            <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.explore-microsoft-copilot-business-users.introduction" onchange="updateProgress()" data-course="course-learn.explore-microsoft-copilot-business-users" data-duration="8.125">
+                                    <span class="unit-title">Introduction</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.explore-microsoft-copilot-business-users.what-is-copilot" onchange="updateProgress()" data-course="course-learn.explore-microsoft-copilot-business-users" data-duration="8.125">
+                                    <span class="unit-title">What is Microsoft Copilot?</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.explore-microsoft-copilot-business-users.copilot-uses" onchange="updateProgress()" data-course="course-learn.explore-microsoft-copilot-business-users" data-duration="8.125">
+                                    <span class="unit-title">What can Microsoft Copilot do?</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.explore-microsoft-copilot-business-users.how-copilot-works" onchange="updateProgress()" data-course="course-learn.explore-microsoft-copilot-business-users" data-duration="8.125">
+                                    <span class="unit-title">How does Microsoft Copilot work?</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.explore-microsoft-copilot-business-users.copilot-prompts" onchange="updateProgress()" data-course="course-learn.explore-microsoft-copilot-business-users" data-duration="8.125">
+                                    <span class="unit-title">Use effective prompts</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.explore-microsoft-copilot-business-users.exercise-explore-copilot" onchange="updateProgress()" data-course="course-learn.explore-microsoft-copilot-business-users" data-duration="8.125">
+                                    <span class="unit-title">Exercise - Explore Microsoft Copilot</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.explore-microsoft-copilot-business-users.knowledge-check" onchange="updateProgress()" data-course="course-learn.explore-microsoft-copilot-business-users" data-duration="8.125">
+                                    <span class="unit-title">Module assessment</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.explore-microsoft-copilot-business-users.summary" onchange="updateProgress()" data-course="course-learn.explore-microsoft-copilot-business-users" data-duration="8.125">
+                                    <span class="unit-title">Summary</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+            
+                    <!-- Course Card -->
+                    <div class="course-item" id="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint">
+                        <div class="course-summary" onclick="toggleDetails(this)">
+                            <div class="course-info">
+                                <div class="course-level">Day 2 Target</div>
+                                <div class="course-name">Transform your everyday work with agents</div>
+                                <div class="course-meta"><span>⏱️ 232 mins</span><span><a class="course-link" href="file:///E:/AIOS/AIS-OS/study/AI_Skills_Yatra/Copilot/3_transform_everyday_work_agents.md">📋 Checklist</a></span></div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div class="progress-donut-container">
+                                    <svg width="36" height="36" viewBox="0 0 36 36" class="donut">
+                                        <circle class="donut-ring" cx="18" cy="18" r="15.915" fill="transparent" stroke-width="3"></circle>
+                                        <circle class="donut-segment" cx="18" cy="18" r="15.915" fill="transparent" stroke-width="3" 
+                                                stroke-dasharray="0 100" stroke-dashoffset="0" id="donut-fill-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint"></circle>
+                                    </svg>
+                                </div>
+                                <span class="arrow-indicator">▼</span>
+                            </div>
+                        </div>
+                        <div class="course-details">
+                            <ul class="unit-list">
+                                            <li class="unit-item module-header">Get started with agents</li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.get-started-no-code-copilot-agents-sharepoint.introduction" onchange="updateProgress()" data-course="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint" data-duration="6.27027027027027">
+                                    <span class="unit-title">Introduction</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.get-started-no-code-copilot-agents-sharepoint.no-code-agents" onchange="updateProgress()" data-course="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint" data-duration="6.27027027027027">
+                                    <span class="unit-title">What are agents?</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.get-started-no-code-copilot-agents-sharepoint.who-can-create-use-no-code-agents" onchange="updateProgress()" data-course="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint" data-duration="6.27027027027027">
+                                    <span class="unit-title">Agents and Access in Microsoft 365 Copilot</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.get-started-no-code-copilot-agents-sharepoint.explore-benefits-no-code-agents" onchange="updateProgress()" data-course="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint" data-duration="6.27027027027027">
+                                    <span class="unit-title">Explore the benefits of using agents</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.get-started-no-code-copilot-agents-sharepoint.enhance-collaboration-using-no-code-agents" onchange="updateProgress()" data-course="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint" data-duration="6.27027027027027">
+                                    <span class="unit-title">Enhance collaboration using agents</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.get-started-no-code-copilot-agents-sharepoint.examine-governance-controls-no-code-agents" onchange="updateProgress()" data-course="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint" data-duration="6.27027027027027">
+                                    <span class="unit-title">Examine IT governance controls for agents</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.get-started-no-code-copilot-agents-sharepoint.knowledge-check" onchange="updateProgress()" data-course="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint" data-duration="6.27027027027027">
+                                    <span class="unit-title">Module assessment</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.get-started-no-code-copilot-agents-sharepoint.summary" onchange="updateProgress()" data-course="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint" data-duration="6.27027027027027">
+                                    <span class="unit-title">Summary</span>
+                                </li>
+                                <li class="unit-item module-header">Explore prebuilt Microsoft 365 Copilot agents</li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.explore-prebuilt-microsoft-365-copilot-agents.introduction" onchange="updateProgress()" data-course="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint" data-duration="6.27027027027027">
+                                    <span class="unit-title">Introduction</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.explore-prebuilt-microsoft-365-copilot-agents.examine-analyst-agent" onchange="updateProgress()" data-course="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint" data-duration="6.27027027027027">
+                                    <span class="unit-title">Examine the Analyst agent</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.explore-prebuilt-microsoft-365-copilot-agents.exercise-analyst-agent" onchange="updateProgress()" data-course="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint" data-duration="6.27027027027027">
+                                    <span class="unit-title">Exercise - Use the Analyst agent</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.explore-prebuilt-microsoft-365-copilot-agents.examine-researcher-agent" onchange="updateProgress()" data-course="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint" data-duration="6.27027027027027">
+                                    <span class="unit-title">Examine the Researcher agent</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.explore-prebuilt-microsoft-365-copilot-agents.exercise-researcher-agent" onchange="updateProgress()" data-course="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint" data-duration="6.27027027027027">
+                                    <span class="unit-title">Exercise - Use the Researcher agent</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.explore-prebuilt-microsoft-365-copilot-agents.examine-prompt-coach-agent" onchange="updateProgress()" data-course="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint" data-duration="6.27027027027027">
+                                    <span class="unit-title">Examine the Prompt Coach agent</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.explore-prebuilt-microsoft-365-copilot-agents.examine-idea-coach-agent" onchange="updateProgress()" data-course="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint" data-duration="6.27027027027027">
+                                    <span class="unit-title">Examine the Idea Coach agent</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.explore-prebuilt-microsoft-365-copilot-agents.examine-writing-coach-agent" onchange="updateProgress()" data-course="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint" data-duration="6.27027027027027">
+                                    <span class="unit-title">Examine the Writing Coach agent</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.explore-prebuilt-microsoft-365-copilot-agents.exercise-agent-choice" onchange="updateProgress()" data-course="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint" data-duration="6.27027027027027">
+                                    <span class="unit-title">Exercise - Use an agent of your choice</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.explore-prebuilt-microsoft-365-copilot-agents.knowledge-check" onchange="updateProgress()" data-course="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint" data-duration="6.27027027027027">
+                                    <span class="unit-title">Module assessment</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.explore-prebuilt-microsoft-365-copilot-agents.summary" onchange="updateProgress()" data-course="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint" data-duration="6.27027027027027">
+                                    <span class="unit-title">Summary</span>
+                                </li>
+                                <li class="unit-item module-header">Build and manage an agent</li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.build-manage-no-code-copilot-agent-sharepoint.introduction" onchange="updateProgress()" data-course="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint" data-duration="6.27027027027027">
+                                    <span class="unit-title">Introduction</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.build-manage-no-code-copilot-agent-sharepoint.examine-tools-create-agents" onchange="updateProgress()" data-course="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint" data-duration="6.27027027027027">
+                                    <span class="unit-title">Examine the tools used to create agents</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.build-manage-no-code-copilot-agent-sharepoint.explore-components-no-code-agent" onchange="updateProgress()" data-course="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint" data-duration="6.27027027027027">
+                                    <span class="unit-title">Explore the components of an agent</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.build-manage-no-code-copilot-agent-sharepoint.create-agent-copilot-chat-part1" onchange="updateProgress()" data-course="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint" data-duration="6.27027027027027">
+                                    <span class="unit-title">Create an agent in Copilot Chat - Part 1</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.build-manage-no-code-copilot-agent-sharepoint.create-agent-copilot-chat-part2" onchange="updateProgress()" data-course="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint" data-duration="6.27027027027027">
+                                    <span class="unit-title">Create an agent in Copilot Chat - Part 2</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.build-manage-no-code-copilot-agent-sharepoint.exercise-create-copilot-chat-agent" onchange="updateProgress()" data-course="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint" data-duration="6.27027027027027">
+                                    <span class="unit-title">Exercise - Create a Copilot Chat agent</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.build-manage-no-code-copilot-agent-sharepoint.create-agent-sharepoint" onchange="updateProgress()" data-course="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint" data-duration="6.27027027027027">
+                                    <span class="unit-title">Create an agent in SharePoint</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.build-manage-no-code-copilot-agent-sharepoint.exercise-create-sharepoint-agent" onchange="updateProgress()" data-course="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint" data-duration="6.27027027027027">
+                                    <span class="unit-title">Exercise - Create a SharePoint agent</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.build-manage-no-code-copilot-agent-sharepoint.test-edit-no-code-agents" onchange="updateProgress()" data-course="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint" data-duration="6.27027027027027">
+                                    <span class="unit-title">Test and edit your agents</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.build-manage-no-code-copilot-agent-sharepoint.manage-no-code-agents" onchange="updateProgress()" data-course="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint" data-duration="6.27027027027027">
+                                    <span class="unit-title">Manage your agents</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.build-manage-no-code-copilot-agent-sharepoint.knowledge-check" onchange="updateProgress()" data-course="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint" data-duration="6.27027027027027">
+                                    <span class="unit-title">Module assessment</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.build-manage-no-code-copilot-agent-sharepoint.summary" onchange="updateProgress()" data-course="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint" data-duration="6.27027027027027">
+                                    <span class="unit-title">Summary</span>
+                                </li>
+                                <li class="unit-item module-header">Share and use agents</li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.use-no-code-agents-sharepoint.introduction" onchange="updateProgress()" data-course="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint" data-duration="6.27027027027027">
+                                    <span class="unit-title">Introduction</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.use-no-code-agents-sharepoint.share-no-code-agent-with-users" onchange="updateProgress()" data-course="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint" data-duration="6.27027027027027">
+                                    <span class="unit-title">Share an agent with other users</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.use-no-code-agents-sharepoint.share-no-code-agent-microsoft-teams" onchange="updateProgress()" data-course="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint" data-duration="6.27027027027027">
+                                    <span class="unit-title">Share an agent in Microsoft Teams</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.use-no-code-agents-sharepoint.interact-no-code-agents-sharepoint-sites" onchange="updateProgress()" data-course="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint" data-duration="6.27027027027027">
+                                    <span class="unit-title">Interact with agents</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.use-no-code-agents-sharepoint.knowledge-check" onchange="updateProgress()" data-course="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint" data-duration="6.27027027027027">
+                                    <span class="unit-title">Module assessment</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.use-no-code-agents-sharepoint.summary" onchange="updateProgress()" data-course="course-learn.wwl.implement-no-code-copilot-agents-microsoft-365-sharepoint" data-duration="6.27027027027027">
+                                    <span class="unit-title">Summary</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                            </div>
+            </div>
+        
+            <!-- Column: Building with AI -->
+            <div class="column-card">
+                <div class="column-header">
+                    <span class="badge" style="background-color: #10b981;">AI</span>
+                    <div class="column-title">Building with AI</div>
+                </div>
+                <div class="courses-list">
+        
+                    <!-- Course Card -->
+                    <div class="course-item" id="course-AI-4_explore_ai_basics_generative_ai">
+                        <div class="course-summary" onclick="toggleDetails(this)">
+                            <div class="course-info">
+                                <div class="course-level">Day 3 Target</div>
+                                <div class="course-name">Explore AI basics and Generative AI</div>
+                                <div class="course-meta"><span>⏱️ 95 mins</span><span><a class="course-link" href="file:///E:/AIOS/AIS-OS/study/AI_Skills_Yatra/AI/4_explore_ai_basics_generative_ai.md">📋 Checklist</a></span></div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div class="progress-donut-container">
+                                    <svg width="36" height="36" viewBox="0 0 36 36" class="donut">
+                                        <circle class="donut-ring" cx="18" cy="18" r="15.915" fill="transparent" stroke-width="3"></circle>
+                                        <circle class="donut-segment" cx="18" cy="18" r="15.915" fill="transparent" stroke-width="3" 
+                                                stroke-dasharray="0 100" stroke-dashoffset="0" id="donut-fill-AI-4_explore_ai_basics_generative_ai"></circle>
+                                    </svg>
+                                </div>
+                                <span class="arrow-indicator">▼</span>
+                            </div>
+                        </div>
+                        <div class="course-details">
+                            <ul class="unit-list">
+                                            <li class="unit-item module-header">Explore Generative AI</li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.philanthropies.explore-generative-ai.introduction" onchange="updateProgress()" data-course="course-AI-4_explore_ai_basics_generative_ai" data-duration="4.75">
+                                    <span class="unit-title">Introduction</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.philanthropies.explore-generative-ai.what-is-generative-ai" onchange="updateProgress()" data-course="course-AI-4_explore_ai_basics_generative_ai" data-duration="4.75">
+                                    <span class="unit-title">What is generative AI?</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.philanthropies.explore-generative-ai.ai-linguistics" onchange="updateProgress()" data-course="course-AI-4_explore_ai_basics_generative_ai" data-duration="4.75">
+                                    <span class="unit-title">AI linguistics</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.philanthropies.explore-generative-ai.visualize-ai-text-image" onchange="updateProgress()" data-course="course-AI-4_explore_ai_basics_generative_ai" data-duration="4.75">
+                                    <span class="unit-title">Visualize with AI from text to image</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.philanthropies.explore-generative-ai.ai-companion-content-creation" onchange="updateProgress()" data-course="course-AI-4_explore_ai_basics_generative_ai" data-duration="4.75">
+                                    <span class="unit-title">AI companion in content creation</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.philanthropies.explore-generative-ai.new-opportunities-with-generative-ai" onchange="updateProgress()" data-course="course-AI-4_explore_ai_basics_generative_ai" data-duration="4.75">
+                                    <span class="unit-title">New opportunities with generative AI</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.philanthropies.explore-generative-ai.exercise-create-with-generative-ai" onchange="updateProgress()" data-course="course-AI-4_explore_ai_basics_generative_ai" data-duration="4.75">
+                                    <span class="unit-title">Exercise: Create with generative AI</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.philanthropies.explore-generative-ai.knowledge-check" onchange="updateProgress()" data-course="course-AI-4_explore_ai_basics_generative_ai" data-duration="4.75">
+                                    <span class="unit-title">Module assessment</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.philanthropies.explore-generative-ai.summary" onchange="updateProgress()" data-course="course-AI-4_explore_ai_basics_generative_ai" data-duration="4.75">
+                                    <span class="unit-title">Summary</span>
+                                </li>
+                                <li class="unit-item module-header">Explore AI basics</li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.philanthropies.explore-ai-basics.introduction" onchange="updateProgress()" data-course="course-AI-4_explore_ai_basics_generative_ai" data-duration="4.75">
+                                    <span class="unit-title">Introduction</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.philanthropies.explore-ai-basics.ai-history" onchange="updateProgress()" data-course="course-AI-4_explore_ai_basics_generative_ai" data-duration="4.75">
+                                    <span class="unit-title">AI history</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.philanthropies.explore-ai-basics.what-is-artificial-intelligence" onchange="updateProgress()" data-course="course-AI-4_explore_ai_basics_generative_ai" data-duration="4.75">
+                                    <span class="unit-title">What is artificial intelligence?</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.philanthropies.explore-ai-basics.data-everywhere" onchange="updateProgress()" data-course="course-AI-4_explore_ai_basics_generative_ai" data-duration="4.75">
+                                    <span class="unit-title">Data everywhere</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.philanthropies.explore-ai-basics.understand-machine-learning" onchange="updateProgress()" data-course="course-AI-4_explore_ai_basics_generative_ai" data-duration="4.75">
+                                    <span class="unit-title">Understand machine learning</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.philanthropies.explore-ai-basics.deep-learning" onchange="updateProgress()" data-course="course-AI-4_explore_ai_basics_generative_ai" data-duration="4.75">
+                                    <span class="unit-title">Deep learning</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.philanthropies.explore-ai-basics.natural-language-processing" onchange="updateProgress()" data-course="course-AI-4_explore_ai_basics_generative_ai" data-duration="4.75">
+                                    <span class="unit-title">Natural Language Processing (NLP)</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.philanthropies.explore-ai-basics.ai-algorithms" onchange="updateProgress()" data-course="course-AI-4_explore_ai_basics_generative_ai" data-duration="4.75">
+                                    <span class="unit-title">AI algorithms</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.philanthropies.explore-ai-basics.ai-in-action" onchange="updateProgress()" data-course="course-AI-4_explore_ai_basics_generative_ai" data-duration="4.75">
+                                    <span class="unit-title">AI in action</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.philanthropies.explore-ai-basics.knowledge-check" onchange="updateProgress()" data-course="course-AI-4_explore_ai_basics_generative_ai" data-duration="4.75">
+                                    <span class="unit-title">Module assessment</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.philanthropies.explore-ai-basics.summary" onchange="updateProgress()" data-course="course-AI-4_explore_ai_basics_generative_ai" data-duration="4.75">
+                                    <span class="unit-title">Summary</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+            
+                    <!-- Course Card -->
+                    <div class="course-item" id="course-learn.wwl.get-started-ai-fundamentals">
+                        <div class="course-summary" onclick="toggleDetails(this)">
+                            <div class="course-info">
+                                <div class="course-level">Day 3 Target</div>
+                                <div class="course-name">Learn more on the AI concepts</div>
+                                <div class="course-meta"><span>⏱️ 40 mins</span><span><a class="course-link" href="file:///E:/AIOS/AIS-OS/study/AI_Skills_Yatra/AI/5_learn_more_ai_concepts.md">📋 Checklist</a></span></div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div class="progress-donut-container">
+                                    <svg width="36" height="36" viewBox="0 0 36 36" class="donut">
+                                        <circle class="donut-ring" cx="18" cy="18" r="15.915" fill="transparent" stroke-width="3"></circle>
+                                        <circle class="donut-segment" cx="18" cy="18" r="15.915" fill="transparent" stroke-width="3" 
+                                                stroke-dasharray="0 100" stroke-dashoffset="0" id="donut-fill-learn.wwl.get-started-ai-fundamentals"></circle>
+                                    </svg>
+                                </div>
+                                <span class="arrow-indicator">▼</span>
+                            </div>
+                        </div>
+                        <div class="course-details">
+                            <ul class="unit-list">
+                                            <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.get-started-ai-fundamentals.introduction-ai" onchange="updateProgress()" data-course="course-learn.wwl.get-started-ai-fundamentals" data-duration="4.0">
+                                    <span class="unit-title">Introduction to AI</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.get-started-ai-fundamentals.generative-ai" onchange="updateProgress()" data-course="course-learn.wwl.get-started-ai-fundamentals" data-duration="4.0">
+                                    <span class="unit-title">Generative AI and agents</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.get-started-ai-fundamentals.natural-language-processing" onchange="updateProgress()" data-course="course-learn.wwl.get-started-ai-fundamentals" data-duration="4.0">
+                                    <span class="unit-title">Text and natural language</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.get-started-ai-fundamentals.speech" onchange="updateProgress()" data-course="course-learn.wwl.get-started-ai-fundamentals" data-duration="4.0">
+                                    <span class="unit-title">Speech</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.get-started-ai-fundamentals.computer-vision" onchange="updateProgress()" data-course="course-learn.wwl.get-started-ai-fundamentals" data-duration="4.0">
+                                    <span class="unit-title">Computer vision</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.get-started-ai-fundamentals.extract-insights" onchange="updateProgress()" data-course="course-learn.wwl.get-started-ai-fundamentals" data-duration="4.0">
+                                    <span class="unit-title">Information extraction</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.get-started-ai-fundamentals.responsible-ai" onchange="updateProgress()" data-course="course-learn.wwl.get-started-ai-fundamentals" data-duration="4.0">
+                                    <span class="unit-title">Responsible AI</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.get-started-ai-fundamentals.exercise" onchange="updateProgress()" data-course="course-learn.wwl.get-started-ai-fundamentals" data-duration="4.0">
+                                    <span class="unit-title">Exercise - Explore AI workloads</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.get-started-ai-fundamentals.knowledge-check" onchange="updateProgress()" data-course="course-learn.wwl.get-started-ai-fundamentals" data-duration="4.0">
+                                    <span class="unit-title">Module assessment</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.get-started-ai-fundamentals.summary" onchange="updateProgress()" data-course="course-learn.wwl.get-started-ai-fundamentals" data-duration="4.0">
+                                    <span class="unit-title">Summary</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+            
+                    <!-- Course Card -->
+                    <div class="course-item" id="course-learn.wwl.develop-computer-vision-with-foundry">
+                        <div class="course-summary" onclick="toggleDetails(this)">
+                            <div class="course-info">
+                                <div class="course-level">Day 4 Target</div>
+                                <div class="course-name">Develop computer vision solutions in Azure</div>
+                                <div class="course-meta"><span>⏱️ 167 mins</span><span><a class="course-link" href="file:///E:/AIOS/AIS-OS/study/AI_Skills_Yatra/AI/6_develop_computer_vision_solutions.md">📋 Checklist</a></span></div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div class="progress-donut-container">
+                                    <svg width="36" height="36" viewBox="0 0 36 36" class="donut">
+                                        <circle class="donut-ring" cx="18" cy="18" r="15.915" fill="transparent" stroke-width="3"></circle>
+                                        <circle class="donut-segment" cx="18" cy="18" r="15.915" fill="transparent" stroke-width="3" 
+                                                stroke-dasharray="0 100" stroke-dashoffset="0" id="donut-fill-learn.wwl.develop-computer-vision-with-foundry"></circle>
+                                    </svg>
+                                </div>
+                                <span class="arrow-indicator">▼</span>
+                            </div>
+                        </div>
+                        <div class="course-details">
+                            <ul class="unit-list">
+                                            <li class="unit-item module-header">Develop a vision-enabled generative AI application</li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.develop-generative-ai-vision-apps.introduction" onchange="updateProgress()" data-course="course-learn.wwl.develop-computer-vision-with-foundry" data-duration="6.423076923076923">
+                                    <span class="unit-title">Introduction</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.develop-generative-ai-vision-apps.deploy-multimodal-models" onchange="updateProgress()" data-course="course-learn.wwl.develop-computer-vision-with-foundry" data-duration="6.423076923076923">
+                                    <span class="unit-title">Use a vision-capable model in the Microsoft Foundry portal</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.develop-generative-ai-vision-apps.develop-visual-chat-apps" onchange="updateProgress()" data-course="course-learn.wwl.develop-computer-vision-with-foundry" data-duration="6.423076923076923">
+                                    <span class="unit-title">Develop a vision-based chat app</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.develop-generative-ai-vision-apps.exercise" onchange="updateProgress()" data-course="course-learn.wwl.develop-computer-vision-with-foundry" data-duration="6.423076923076923">
+                                    <span class="unit-title">Exercise - Develop a vision-enabled chat app</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.develop-generative-ai-vision-apps.knowledge-check" onchange="updateProgress()" data-course="course-learn.wwl.develop-computer-vision-with-foundry" data-duration="6.423076923076923">
+                                    <span class="unit-title">Module assessment</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.develop-generative-ai-vision-apps.summary" onchange="updateProgress()" data-course="course-learn.wwl.develop-computer-vision-with-foundry" data-duration="6.423076923076923">
+                                    <span class="unit-title">Summary</span>
+                                </li>
+                                <li class="unit-item module-header">Generate images with AI</li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.generate-images-azure-openai.introduction" onchange="updateProgress()" data-course="course-learn.wwl.develop-computer-vision-with-foundry" data-duration="6.423076923076923">
+                                    <span class="unit-title">Introduction</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.generate-images-azure-openai.what-is-dall-e" onchange="updateProgress()" data-course="course-learn.wwl.develop-computer-vision-with-foundry" data-duration="6.423076923076923">
+                                    <span class="unit-title">What are image-generation models?</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.generate-images-azure-openai.dall-e-in-openai-studio" onchange="updateProgress()" data-course="course-learn.wwl.develop-computer-vision-with-foundry" data-duration="6.423076923076923">
+                                    <span class="unit-title">Explore image-generation models in Microsoft Foundry portal</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.generate-images-azure-openai.dall-e-rest-api" onchange="updateProgress()" data-course="course-learn.wwl.develop-computer-vision-with-foundry" data-duration="6.423076923076923">
+                                    <span class="unit-title">Create a client application that uses an image generation model</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.generate-images-azure-openai.exercise-use-dall-e" onchange="updateProgress()" data-course="course-learn.wwl.develop-computer-vision-with-foundry" data-duration="6.423076923076923">
+                                    <span class="unit-title">Exercise - Generate images with AI</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.generate-images-azure-openai.knowledge-check" onchange="updateProgress()" data-course="course-learn.wwl.develop-computer-vision-with-foundry" data-duration="6.423076923076923">
+                                    <span class="unit-title">Module assessment</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.generate-images-azure-openai.summary" onchange="updateProgress()" data-course="course-learn.wwl.develop-computer-vision-with-foundry" data-duration="6.423076923076923">
+                                    <span class="unit-title">Summary</span>
+                                </li>
+                                <li class="unit-item module-header">Generate videos with Microsoft Foundry</li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.generate-video-with-foundry.introduction" onchange="updateProgress()" data-course="course-learn.wwl.develop-computer-vision-with-foundry" data-duration="6.423076923076923">
+                                    <span class="unit-title">Introduction</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.generate-video-with-foundry.deploy-video-model" onchange="updateProgress()" data-course="course-learn.wwl.develop-computer-vision-with-foundry" data-duration="6.423076923076923">
+                                    <span class="unit-title">Deploy a video generating model</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.generate-video-with-foundry.generate-video-from-prompt" onchange="updateProgress()" data-course="course-learn.wwl.develop-computer-vision-with-foundry" data-duration="6.423076923076923">
+                                    <span class="unit-title">Generate video from a prompt</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.generate-video-with-foundry.generate-video-in-python" onchange="updateProgress()" data-course="course-learn.wwl.develop-computer-vision-with-foundry" data-duration="6.423076923076923">
+                                    <span class="unit-title">Generate video in Python</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.generate-video-with-foundry.exercise" onchange="updateProgress()" data-course="course-learn.wwl.develop-computer-vision-with-foundry" data-duration="6.423076923076923">
+                                    <span class="unit-title">Exercise - Generate video with Sora 2 in Microsoft Foundry</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.generate-video-with-foundry.knowledge-check" onchange="updateProgress()" data-course="course-learn.wwl.develop-computer-vision-with-foundry" data-duration="6.423076923076923">
+                                    <span class="unit-title">Module assessment</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.generate-video-with-foundry.summary" onchange="updateProgress()" data-course="course-learn.wwl.develop-computer-vision-with-foundry" data-duration="6.423076923076923">
+                                    <span class="unit-title">Summary</span>
+                                </li>
+                                <li class="unit-item module-header">Analyze images with Content Understanding</li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.analyze-images-with-content-understanding.introduction" onchange="updateProgress()" data-course="course-learn.wwl.develop-computer-vision-with-foundry" data-duration="6.423076923076923">
+                                    <span class="unit-title">Introduction</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.analyze-images-with-content-understanding.what-is-content-understanding" onchange="updateProgress()" data-course="course-learn.wwl.develop-computer-vision-with-foundry" data-duration="6.423076923076923">
+                                    <span class="unit-title">What is Content Understanding?</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.analyze-images-with-content-understanding.analyze-images-with-content-understanding" onchange="updateProgress()" data-course="course-learn.wwl.develop-computer-vision-with-foundry" data-duration="6.423076923076923">
+                                    <span class="unit-title">Analyze images with Content Understanding</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.analyze-images-with-content-understanding.exercise" onchange="updateProgress()" data-course="course-learn.wwl.develop-computer-vision-with-foundry" data-duration="6.423076923076923">
+                                    <span class="unit-title">Exercise - Analyze images with Content Understanding</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.analyze-images-with-content-understanding.knowledge-check" onchange="updateProgress()" data-course="course-learn.wwl.develop-computer-vision-with-foundry" data-duration="6.423076923076923">
+                                    <span class="unit-title">Module assessment</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.analyze-images-with-content-understanding.summary" onchange="updateProgress()" data-course="course-learn.wwl.develop-computer-vision-with-foundry" data-duration="6.423076923076923">
+                                    <span class="unit-title">Summary</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                            </div>
+            </div>
+        
+            <!-- Column: Security in the AI Era -->
+            <div class="column-card">
+                <div class="column-header">
+                    <span class="badge" style="background-color: #3b82f6;">Security</span>
+                    <div class="column-title">Security in the AI Era</div>
+                </div>
+                <div class="courses-list">
+        
+                    <!-- Course Card -->
+                    <div class="course-item" id="course-learn.wwl.describe-basic-concepts-of-cybersecurity">
+                        <div class="course-summary" onclick="toggleDetails(this)">
+                            <div class="course-info">
+                                <div class="course-level">Day 5 Target</div>
+                                <div class="course-name">Describe the concepts of cybersecurity</div>
+                                <div class="course-meta"><span>⏱️ 137 mins</span><span><a class="course-link" href="file:///E:/AIOS/AIS-OS/study/AI_Skills_Yatra/Security/7_describe_concepts_cybersecurity.md">📋 Checklist</a></span></div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div class="progress-donut-container">
+                                    <svg width="36" height="36" viewBox="0 0 36 36" class="donut">
+                                        <circle class="donut-ring" cx="18" cy="18" r="15.915" fill="transparent" stroke-width="3"></circle>
+                                        <circle class="donut-segment" cx="18" cy="18" r="15.915" fill="transparent" stroke-width="3" 
+                                                stroke-dasharray="0 100" stroke-dashoffset="0" id="donut-fill-learn.wwl.describe-basic-concepts-of-cybersecurity"></circle>
+                                    </svg>
+                                </div>
+                                <span class="arrow-indicator">▼</span>
+                            </div>
+                        </div>
+                        <div class="course-details">
+                            <ul class="unit-list">
+                                            <li class="unit-item module-header">Describe basic cybersecurity threats, attacks, and mitigations</li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-basic-cybersecurity-threats-attacks-mitigations.introduction" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Introduction</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-basic-cybersecurity-threats-attacks-mitigations.describe-what-is-cybersecurity" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Describe what is cybersecurity</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-basic-cybersecurity-threats-attacks-mitigations.describe-threat-landscape" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Describe the threat landscape</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-basic-cybersecurity-threats-attacks-mitigations.describe-malware" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Describe malware</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-basic-cybersecurity-threats-attacks-mitigations.mitigation-strategies" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Describe basic mitigation strategies</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-basic-cybersecurity-threats-attacks-mitigations.knowledge-check" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Module assessment</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-basic-cybersecurity-threats-attacks-mitigations.summary-resources" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Summary and resources</span>
+                                </li>
+                                <li class="unit-item module-header">Describe concepts of cryptography</li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-concepts-of-cryptography.introduction" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Introduction</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-concepts-of-cryptography.describe-cryptography" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Describe cryptography</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-concepts-of-cryptography.describe-encryption-its-use-cybersecurity" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Describe encryption and its use in cybersecurity</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-concepts-of-cryptography.describe-hashing-its-application-digital-signing" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Describe hashing and its application in digital signing</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-concepts-of-cryptography.describe-digital-certificates" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Describe digital certificates</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-concepts-of-cryptography.knowledge-check" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Module assessment</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-concepts-of-cryptography.summary-resources" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Summary and resources</span>
+                                </li>
+                                <li class="unit-item module-header">Describe authentication and authorization in cybersecurity</li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-authentication-authorization-cybersecurity.introduction" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Introduction</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-authentication-authorization-cybersecurity.define-authentication" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Define authentication</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-authentication-authorization-cybersecurity.based-attacks" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Describe authentication-based attacks</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-authentication-authorization-cybersecurity.describe-authorization-security-techniques" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Describe authorization security techniques</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-authentication-authorization-cybersecurity.knowledge-check" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Module assessment</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-authentication-authorization-cybersecurity.summary-resources" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Summary and resources</span>
+                                </li>
+                                <li class="unit-item module-header">Describe network-based threats and mitigations</li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-network-based-threats-mitigations.introduction" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Introduction</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-network-based-threats-mitigations.describe-different-types-of-networks" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Describe the different types of networks</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-network-based-threats-mitigations.describe-how-data-moves-around-network" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Describe how data moves around a network</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-network-based-threats-mitigations.describe-threats-to-network-security" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Describe threats to network security</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-network-based-threats-mitigations.protect-your-network" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Protect your network</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-network-based-threats-mitigations.knowledge-check" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Module assessment</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-network-based-threats-mitigations.summary-resources" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Summary and resources</span>
+                                </li>
+                                <li class="unit-item module-header">Describe device-based threats and security controls</li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-device-based-threats-security-controls.introduction" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Introduction</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-device-based-threats-security-controls.describe-what-your-device-knows-about-you" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Describe what your device knows about you</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-device-based-threats-security-controls.describe-how-devices-become-cybersecurity-threats" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Describe how devices become cybersecurity threats</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-device-based-threats-security-controls.describe-how-to-mitigate-against-device-related-threats" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Describe how to mitigate against device-related threats</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-device-based-threats-security-controls.knowledge-check" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Module assessment</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-device-based-threats-security-controls.summary-resources" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Summary and resources</span>
+                                </li>
+                                <li class="unit-item module-header">Describe application-based threats and how to protect against them</li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-application-based-threats-security-controls.introduction" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Introduction</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-application-based-threats-security-controls.describe-topology-used-applications" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Describe what are applications</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-application-based-threats-security-controls.describe-threat-landscape-of-applications" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Describe the threat landscape of applications</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-application-based-threats-security-controls.describe-how-application-hardening-improves-application-security" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Describe how to protect your applications</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-application-based-threats-security-controls.knowledge-check" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Module assessment</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-application-based-threats-security-controls.summary-resources" onchange="updateProgress()" data-course="course-learn.wwl.describe-basic-concepts-of-cybersecurity" data-duration="3.5128205128205128">
+                                    <span class="unit-title">Summary and resources</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+            
+                    <!-- Course Card -->
+                    <div class="course-item" id="course-learn.wwl.describe-concepts-of-security-compliance-identity">
+                        <div class="course-summary" onclick="toggleDetails(this)">
+                            <div class="course-info">
+                                <div class="course-level">Day 5 Target</div>
+                                <div class="course-name">Introduction to security, compliance, and identity concepts</div>
+                                <div class="course-meta"><span>⏱️ 97 mins</span><span><a class="course-link" href="file:///E:/AIOS/AIS-OS/study/AI_Skills_Yatra/Security/8_intro_security_compliance_identity.md">📋 Checklist</a></span></div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div class="progress-donut-container">
+                                    <svg width="36" height="36" viewBox="0 0 36 36" class="donut">
+                                        <circle class="donut-ring" cx="18" cy="18" r="15.915" fill="transparent" stroke-width="3"></circle>
+                                        <circle class="donut-segment" cx="18" cy="18" r="15.915" fill="transparent" stroke-width="3" 
+                                                stroke-dasharray="0 100" stroke-dashoffset="0" id="donut-fill-learn.wwl.describe-concepts-of-security-compliance-identity"></circle>
+                                    </svg>
+                                </div>
+                                <span class="arrow-indicator">▼</span>
+                            </div>
+                        </div>
+                        <div class="course-details">
+                            <ul class="unit-list">
+                                            <li class="unit-item module-header">Describe security and compliance concepts</li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-security-concepts-methodologies.introduction" onchange="updateProgress()" data-course="course-learn.wwl.describe-concepts-of-security-compliance-identity" data-duration="6.0625">
+                                    <span class="unit-title">Introduction</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-security-concepts-methodologies.describe-shared-responsibility-model" onchange="updateProgress()" data-course="course-learn.wwl.describe-concepts-of-security-compliance-identity" data-duration="6.0625">
+                                    <span class="unit-title">Describe the shared responsibility model</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-security-concepts-methodologies.describe-defense-depth" onchange="updateProgress()" data-course="course-learn.wwl.describe-concepts-of-security-compliance-identity" data-duration="6.0625">
+                                    <span class="unit-title">Describe defense in depth</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-security-concepts-methodologies.describe-zero-trust-methodology" onchange="updateProgress()" data-course="course-learn.wwl.describe-concepts-of-security-compliance-identity" data-duration="6.0625">
+                                    <span class="unit-title">Describe the Zero Trust model</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-security-concepts-methodologies.describe-ways-encryption,-hashing,-signing-can-secure-your-data" onchange="updateProgress()" data-course="course-learn.wwl.describe-concepts-of-security-compliance-identity" data-duration="6.0625">
+                                    <span class="unit-title">Describe encryption and hashing</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-security-concepts-methodologies.describe-compliance-concepts" onchange="updateProgress()" data-course="course-learn.wwl.describe-concepts-of-security-compliance-identity" data-duration="6.0625">
+                                    <span class="unit-title">Describe governance, risk, and compliance (GRC) concepts</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-security-concepts-methodologies.knowledge-check" onchange="updateProgress()" data-course="course-learn.wwl.describe-concepts-of-security-compliance-identity" data-duration="6.0625">
+                                    <span class="unit-title">Module assessment</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-security-concepts-methodologies.summary-resources" onchange="updateProgress()" data-course="course-learn.wwl.describe-concepts-of-security-compliance-identity" data-duration="6.0625">
+                                    <span class="unit-title">Summary and resources</span>
+                                </li>
+                                <li class="unit-item module-header">Describe identity concepts</li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-identity-principles-concepts.introduction" onchange="updateProgress()" data-course="course-learn.wwl.describe-concepts-of-security-compliance-identity" data-duration="6.0625">
+                                    <span class="unit-title">Introduction</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-identity-principles-concepts.define-authentication-and-authorization" onchange="updateProgress()" data-course="course-learn.wwl.describe-concepts-of-security-compliance-identity" data-duration="6.0625">
+                                    <span class="unit-title">Define authentication and authorization</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-identity-principles-concepts.define-identity-as-primary-security-perimeter" onchange="updateProgress()" data-course="course-learn.wwl.describe-concepts-of-security-compliance-identity" data-duration="6.0625">
+                                    <span class="unit-title">Define identity as the primary security perimeter</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-identity-principles-concepts.describe-modern-authentication-role-identity-provider" onchange="updateProgress()" data-course="course-learn.wwl.describe-concepts-of-security-compliance-identity" data-duration="6.0625">
+                                    <span class="unit-title">Describe the role of the identity provider</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-identity-principles-concepts.describe-concept-of-directory-services-active-directory" onchange="updateProgress()" data-course="course-learn.wwl.describe-concepts-of-security-compliance-identity" data-duration="6.0625">
+                                    <span class="unit-title">Describe the concept of directory services and Active Directory</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-identity-principles-concepts.describe-concept-federated-services" onchange="updateProgress()" data-course="course-learn.wwl.describe-concepts-of-security-compliance-identity" data-duration="6.0625">
+                                    <span class="unit-title">Describe the concept of federation</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-identity-principles-concepts.knowledge-check" onchange="updateProgress()" data-course="course-learn.wwl.describe-concepts-of-security-compliance-identity" data-duration="6.0625">
+                                    <span class="unit-title">Module assessment</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-identity-principles-concepts.summary-resources" onchange="updateProgress()" data-course="course-learn.wwl.describe-concepts-of-security-compliance-identity" data-duration="6.0625">
+                                    <span class="unit-title">Summary and resources</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+            
+                    <!-- Course Card -->
+                    <div class="course-item" id="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions">
+                        <div class="course-summary" onclick="toggleDetails(this)">
+                            <div class="course-info">
+                                <div class="course-level">Day 6 Target</div>
+                                <div class="course-name">Introduction to Microsoft security solutions</div>
+                                <div class="course-meta"><span>⏱️ 216 mins</span><span><a class="course-link" href="file:///E:/AIOS/AIS-OS/study/AI_Skills_Yatra/Security/9_intro_microsoft_security_solutions.md">📋 Checklist</a></span></div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div class="progress-donut-container">
+                                    <svg width="36" height="36" viewBox="0 0 36 36" class="donut">
+                                        <circle class="donut-ring" cx="18" cy="18" r="15.915" fill="transparent" stroke-width="3"></circle>
+                                        <circle class="donut-segment" cx="18" cy="18" r="15.915" fill="transparent" stroke-width="3" 
+                                                stroke-dasharray="0 100" stroke-dashoffset="0" id="donut-fill-learn.wwl.describe-capabilities-of-microsoft-security-solutions"></circle>
+                                    </svg>
+                                </div>
+                                <span class="arrow-indicator">▼</span>
+                            </div>
+                        </div>
+                        <div class="course-details">
+                            <ul class="unit-list">
+                                            <li class="unit-item module-header">Describe Microsoft Security Copilot</li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn-wwl.security-copilot-getting-started.introduction" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Introduction</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn-wwl.security-copilot-getting-started.describe-security-copilot" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Get acquainted with Microsoft Security Copilot</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn-wwl.security-copilot-getting-started.describe-terminology" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Describe Microsoft Security Copilot terminology</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn-wwl.security-copilot-getting-started.describe-how-copilot-processes-prompts" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Describe how Microsoft Security Copilot processes prompt requests</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn-wwl.security-copilot-getting-started.create-effective-prompts" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Describe the elements of an effective prompt</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn-wwl.security-copilot-getting-started.describe-how-to-enable-security-copilot" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Describe how to enable Microsoft Security Copilot</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn-wwl.security-copilot-getting-started.knowledge-check" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Module assessment</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn-wwl.security-copilot-getting-started.summary" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Summary and resources</span>
+                                </li>
+                                <li class="unit-item module-header">Describe core infrastructure security services in Azure</li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-basic-security-capabilities-azure.introduction" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Introduction</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-basic-security-capabilities-azure.describe-azure-ddos-protection" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Describe Azure DDoS protection</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-basic-security-capabilities-azure.describe-what-is-azure-firewall" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Describe Azure Firewall</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-basic-security-capabilities-azure.describe-what-is-web-application-firewall" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Describe Web Application Firewall</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-basic-security-capabilities-azure.describe-network-segmentation" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Describe network segmentation in Azure</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-basic-security-capabilities-azure.describe-azure-network-security-groups" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Describe Azure Network Security Groups</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-basic-security-capabilities-azure.describe-what-is-azure-bastion" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Describe Azure Bastion</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-basic-security-capabilities-azure.describe-ways-azure-encrypts-data" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Describe Azure Key Vault</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-basic-security-capabilities-azure.knowledge-check" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Module assessment</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-basic-security-capabilities-azure.summary-resources" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Summary and resources</span>
+                                </li>
+                                <li class="unit-item module-header">Describe the security management capabilities in Azure</li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-security-management-capabilities-of-azure.introduction" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Introduction</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-security-management-capabilities-of-azure.describe-&amp;-explore-azure-security-center" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Describe Microsoft Defender for Cloud</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-security-management-capabilities-of-azure.baselines-for-azure" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Describe how security policies, standards, and recommendations improve cloud security posture</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-security-management-capabilities-of-azure.describe-cloud-security-posture-management-cspm" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Describe Cloud security posture management</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-security-management-capabilities-of-azure.describe-benefit-use-cases-defender" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Describe the enhanced security of Microsoft Defender for Cloud</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-security-management-capabilities-of-azure.describe-dev-ops-security-management" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Describe DevOps security management</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-security-management-capabilities-of-azure.knowledge-check" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Module assessment</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-security-management-capabilities-of-azure.summary-resources" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Summary and resources</span>
+                                </li>
+                                <li class="unit-item module-header">Describe security capabilities of Microsoft Sentinel</li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-security-capabilities-of-azure-sentinel.introduction" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Introduction</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-security-capabilities-of-azure-sentinel.define-concepts-of-siem,-soar,-xdr" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Define the concepts of SIEM and SOAR</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-security-capabilities-of-azure-sentinel.describe-role-value-of-sentinel-providing-integrated-threat-protection" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Describe threat detection and mitigation capabilities in Microsoft Sentinel</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-security-capabilities-of-azure-sentinel.describe-security-copilot" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Describe Microsoft Sentinel integration with Microsoft Security Copilot</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-security-capabilities-of-azure-sentinel.knowledge-check" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Module assessment</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-security-capabilities-of-azure-sentinel.summary-resources" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Summary and resources</span>
+                                </li>
+                                <li class="unit-item module-header">Describe threat protection with Microsoft Defender XDR</li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-threat-protection-with-microsoft-365-defender.introduction" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Introduction</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-threat-protection-with-microsoft-365-defender.describe-services" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Describe Microsoft Defender XDR services</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-threat-protection-with-microsoft-365-defender.describe-microsoft-defender-for-office-365-formerly-office-365-atp" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Describe Microsoft Defender for Office 365</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-threat-protection-with-microsoft-365-defender.describe-microsoft-defender-for-endpoint-formerly-microsoft-defender-atp" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Describe Microsoft Defender for Endpoint</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-threat-protection-with-microsoft-365-defender.describe-microsoft-cloud-app-security" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Describe Microsoft Defender for Cloud Apps</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-threat-protection-with-microsoft-365-defender.describe-microsoft-defender-for-identity-formerly-azure-atp" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Describe Microsoft Defender for Identity</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-threat-protection-with-microsoft-365-defender.describe-defender-vulnerability-management" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Describe Microsoft Defender Vulnerability Management</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-threat-protection-with-microsoft-365-defender.describe-defender-threat-intelligence" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Describe Microsoft Defender Threat Intelligence</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-threat-protection-with-microsoft-365-defender.describe-security-exposure-management" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Describe Microsoft Security Exposure Management</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-threat-protection-with-microsoft-365-defender.describe-microsoft-defender-portal" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Describe the Microsoft Defender portal</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-threat-protection-with-microsoft-365-defender.describe-copilot-in-defender-xdr" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Describe Copilot integration with Microsoft Defender XDR</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-threat-protection-with-microsoft-365-defender.knowledge-check" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Module assessment</span>
+                                </li>
+                                <li class="unit-item">
+                                    <input type="checkbox" id="chk-learn.wwl.describe-threat-protection-with-microsoft-365-defender.summary-resources" onchange="updateProgress()" data-course="course-learn.wwl.describe-capabilities-of-microsoft-security-solutions" data-duration="4.8">
+                                    <span class="unit-title">Summary and resources</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                            </div>
+            </div>
+        
+        </div>
+    </div>
+
+    <script>
+        function toggleDetails(summaryEl) {
+            const courseItem = summaryEl.parentElement;
+            courseItem.classList.toggle('open');
+        }
+
+        function updateProgress() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            const totalUnits = checkboxes.length;
+            let completedUnits = 0;
+            let completedMinutes = 0;
+            
+            // Group by course to update donut charts
+            const courseStatus = {};
+            
+            checkboxes.forEach(cb => {
+                const courseId = cb.getAttribute('data-course');
+                const duration = parseFloat(cb.getAttribute('data-duration'));
+                
+                if (!courseStatus[courseId]) {
+                    courseStatus[courseId] = { total: 0, completed: 0 };
+                }
+                
+                courseStatus[courseId].total++;
+                
+                if (cb.checked) {
+                    completedUnits++;
+                    completedMinutes += duration;
+                    courseStatus[courseId].completed++;
+                    localStorage.setItem(cb.id, 'true');
+                } else {
+                    localStorage.removeItem(cb.id);
+                }
+            });
+            
+            // Update individual donut charts
+            for (const courseId in courseStatus) {
+                const status = courseStatus[courseId];
+                const pct = status.total > 0 ? Math.round((status.completed / status.total) * 100) : 0;
+                const fillEl = document.getElementById('donut-fill-' + courseId.replace('course-', ''));
+                if (fillEl) {
+                    fillEl.setAttribute('stroke-dasharray', `${pct} ${100 - pct}`);
+                }
+            }
+            
+            // Overall stats
+            const overallPct = totalUnits > 0 ? Math.round((completedUnits / totalUnits) * 100) : 0;
+            document.getElementById('overall-pct').innerText = overallPct + '%';
+            document.getElementById('overall-fill').style.width = overallPct + '%';
+            document.getElementById('units-completed').innerText = `${completedUnits}/${totalUnits}`;
+            
+            const totalMinutes = 1073;
+            const minutesLeft = Math.max(0, totalMinutes - completedMinutes);
+            const hoursLeft = (minutesLeft / 60).toFixed(1);
+            document.getElementById('hours-left').innerText = hoursLeft;
+        }
+
+        // Restore state on load
+        window.addEventListener('DOMContentLoaded', () => {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(cb => {
+                if (localStorage.getItem(cb.id) === 'true') {
+                    cb.checked = true;
+                }
+            });
+            updateProgress();
+        });
+    </script>
+</body>
+</html>

@@ -18,19 +18,26 @@ Use this skill when the user wants to generate structured notes, explanations, a
 
 ## 1. Core Workflow
 
+- [ ] **0. Load Templates**: **CRITICAL**: Before generating any output files, you MUST load and read the skeleton templates to understand their exact structure and token replacements. Never generate study guides, checklists, or reference code from scratch:
+  - `study/templates/study-sheet.md`
+  - `study/templates/checklist.md`
+  - `study/templates/reference-code.c` (or `.cpp` equivalent if using C++)
+
+  See `study/templates/README.md` for the full placeholder reference.
+
 - [ ] **1. Run Python Gatherer**: Execute `python scripts/study_helper.py` with your targeted parameters:
   ```bash
   python scripts/study_helper.py --topic "[Topic Name]" --course "[Course]" --dork --map-dir "[Local Code Path]"
   ```
 - [ ] **2. Read gathered context**: Load `study/temp_context.json`.
 - [ ] **3. Query NotebookLM (Optional)**: If NotebookLM is running, query the notebook associated with the course for extra lecture details.
-- [ ] **4. Synthesize 8-Point Study Sheet**: Write a Markdown guide to `study/<course>/<topic_dashed>.md` containing the concepts and Mermaid mapping data.
-- [ ] **5. Generate Runnable Code**: Write a fully-commented example code file to `study/<course>/<topic_dashed>.<ext>`.
+- [ ] **4. Fill Study Sheet Template**: Copy `study/templates/study-sheet.md`. Replace every `{{TOKEN}}` with topic-specific content. Save to `study/<course>/<topic_dashed>.md`.
+- [ ] **5. Fill Reference Code Template**: Copy `study/templates/reference-code.c` (or `.cpp`). Replace every `{{TOKEN}}` with working, commented code. Save to `study/<course>/<topic_dashed>.<ext>`.
 - [ ] **6. Add Notion Task**: Invoke `python scripts/notion_helper.py` to add a practice task card to the user's Notion task list:
   ```bash
   python scripts/notion_helper.py add "Practice: [Topic]" "Not started"
   ```
-- [ ] **7. Generate Checklist & Sync to Google Drive**: Create the assignment checklist and upload all three artifacts:
+- [ ] **7. Fill Checklist Template & Sync**: Copy `study/templates/checklist.md`. Replace every `{{TOKEN}}`. Then upload all three artifacts:
   ```bash
   # Generate checklist and sync it
   python scripts/checklist_generator.py \
@@ -73,7 +80,7 @@ Scans folders for C/C++ classes:
 ## 3. Study Guide Output Specification
 
 ### 1. 8-Point Study Sheet Structure
-Save to `study/<course>/<topic_dashed>.md`. Include:
+Save to `study/<course>/<topic_dashed>.md`. **Use `study/templates/study-sheet.md` as base** — fill `{{TOKEN}}` placeholders; never regenerate structure from scratch. Do not add any extra sections (such as a duplicate Checklist section) that are not in the template, as checklists are tracked separately in `checklist.md`.
 1.  **Explanation**: Plain-English explanation of the topic.
 2.  **Significance**: Why this concept is critical in computer science.
 3.  **Types/Variants**: Classifications or forms of this topic.
@@ -84,7 +91,7 @@ Save to `study/<course>/<topic_dashed>.md`. Include:
 8.  **Core Nature**: Mechanical low-level breakdown (e.g. how it behaves in memory/stack/heap).
 
 ### 2. Code Example Generation
-Save a clean, standalone, runnable source file to `study/<course>/<topic_dashed>.<ext>` containing:
+Save a clean, standalone, runnable source file to `study/<course>/<topic_dashed>.<ext>`. **Use `study/templates/reference-code.c` as base** — fill `{{TOKEN}}` placeholders. File must contain:
 - Complete implementation of the topic.
 - In-line comments explaining line-by-line mechanical execution.
 - A main function demonstrating correct execution.
