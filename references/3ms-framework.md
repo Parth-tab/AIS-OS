@@ -31,7 +31,7 @@ If the answer is "it can't do all of it," the follow-up: "How could AI assist wi
 
 It's never binary. The real question is always **"to what extent can AI be leveraged here?"** Maybe 80%. Maybe 10%. You don't know until you ask.
 
-**Real example.** Updating tracking links across 300+ YouTube video descriptions. The old way: open each video in YouTube Studio, find the link, replace it, save, next. Hours of mind-numbing work. The new way: describe the problem to Claude Code and walk to the kitchen for water. By the time you come back, it's researched the YouTube Data API, figured out quota limits, written a script, and laid out a plan. Approve, run, done. Now you have a reusable system.
+**Real example.** Updating tracking links across 300+ YouTube video descriptions. The old way: open each video in YouTube Studio, find the link, replace it, save, next. Hours of mind-numbing work. The new way: describe the problem to Antigravity and walk to the kitchen for water. By the time you come back, it's researched the YouTube Data API, figured out quota limits, written a script, and laid out a plan. Approve, run, done. Now you have a reusable system.
 
 The Default Shift is like learning to type instead of writing by hand. Once it clicks, you physically cannot go back. Every manual task starts to itch.
 

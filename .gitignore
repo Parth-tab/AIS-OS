@@ -4,5 +4,10 @@
 *.log
 __pycache__/
 node_modules/
-.claude/settings.local.json
+.antigravity/settings.local.json
 audits/
+study/temp_context.json
+credentials.json
+token.json
+*.exe
+

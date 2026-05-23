@@ -5,7 +5,7 @@ description: Use when someone asks for an AIOS audit, asks to score their setup 
 
 ## What this skill does
 
-Runs the **Four Cs Audit** on the current Claude Code project. Reads (never writes) the project's operating manual, memory, skills, agents, MCPs, decisions, and references. Scores each of the Four Cs out of 25. Surfaces strengths and the top 3 leverage-weighted gaps with concrete next-step commands.
+Runs the **Four Cs Audit** on the current Antigravity project. Reads (never writes) the project's operating manual, memory, skills, agents, MCPs, decisions, and references. Scores each of the Four Cs out of 25. Surfaces strengths and the top 3 leverage-weighted gaps with concrete next-step commands.
 
 **Scope is structural — "is the AIOS built right?"** It is NOT a capability planner. Capability gaps ("you could build a daily brief if you connected calendar") belong to `/level-up`. The audit answers: are the files, folders, registries, and connections in good shape?
 
@@ -31,13 +31,13 @@ First run is the baseline. Re-run weekly to watch the score climb. That's the co
 
 The audit looks for **patterns and intent**, not exact paths. File names vary. Use Glob and Read to check:
 
-**Operating manual:** `CLAUDE.md` (root), `CLAUDE.local.md` (gitignored).
-**Memory:** `MEMORY.md` (root), `~/.claude/projects/<id>/memory/MEMORY.md`, or `memory/` folder.
-**Skills:** `.claude/skills/*/SKILL.md` — count + frontmatter.
-**Agents:** `.claude/agents/*.md` — count + frontmatter.
+**Operating manual:** `GEMINI.md` (root), `GEMINI.local.md` (gitignored).
+**Memory:** `MEMORY.md` (root), `~/.antigravity/projects/<id>/memory/MEMORY.md`, or `memory/` folder.
+**Skills:** `.antigravity/skills/*/SKILL.md` — count + frontmatter.
+**Agents:** `.antigravity/agents/*.md` — count + frontmatter.
 **Connection mechanisms** (any of these = "reachable"):
-- MCPs: `.mcp.json`, `.claude/settings.json` (mcpServers key), `.claude/settings.local.json`
-- API scripts: `scripts/*.py|.js|.ts` documented in CLAUDE.md
+- MCPs: `.mcp.json`, `.antigravity/settings.json` (mcpServers key), `.antigravity/settings.local.json`
+- API scripts: `scripts/*.py|.js|.ts` documented in GEMINI.md
 - Export pipelines: `data/`, `imports/`, `exports/` with refresh script + last-run timestamp
 - API keys + reference guide: `.env` entries + corresponding `references/{tool}-api.md`
 
@@ -45,8 +45,8 @@ The audit looks for **patterns and intent**, not exact paths. File names vary. U
 **Reference guides:** `references/{tool}-api.md`, `references/*-reference.md`, or equivalent.
 **Decisions:** `decisions/log.md`, `decisions.md`, or any append-only decisions file.
 **References / SOPs:** `references/`, `docs/`, `sops/` folders.
-**Templates:** `templates/`, `.claude/templates/`.
-**Hooks / scheduled jobs:** `.claude/settings.json` hooks key, or skill names matching `morning-*`, `weekly-*`, `daily-*`, `monthly-*`, `standup`.
+**Templates:** `templates/`, `.antigravity/templates/`.
+**Hooks / scheduled jobs:** `.antigravity/settings.json` hooks key, or skill names matching `morning-*`, `weekly-*`, `daily-*`, `monthly-*`, `standup`.
 
 Don't penalize for non-canonical names if equivalent intent is captured elsewhere.
 
@@ -56,8 +56,8 @@ Don't penalize for non-canonical names if equivalent intent is captured elsewher
 
 | Criterion | Points | How to detect |
 |---|---|---|
-| Operating manual exists and is substantive (>200 words) | 5 | Read CLAUDE.md, count words |
-| Identity / role / voice captured | 5 | CLAUDE.md mentions who the user is + role/mission, OR `.claude/rules/*.md` exists |
+| Operating manual exists and is substantive (>200 words) | 5 | Read GEMINI.md, count words |
+| Identity / role / voice captured | 5 | GEMINI.md mentions who the user is + role/mission, OR `.antigravity/rules/*.md` exists |
 | Persistent memory exists with multiple entries | 5 | MEMORY.md exists with >3 entries, OR `memory/` has >3 files |
 | Reference docs exist | 5 | `references/`, `docs/`, or `sops/` has ≥1 file |
 | Decisions captured | 5 | `decisions/log.md` or equivalent has ≥1 entry |
@@ -92,17 +92,17 @@ A "reachable" connection counts via ANY mechanism: MCP, script, export pipeline,
 
 | Criterion | Points | How to detect |
 |---|---|---|
-| 3+ skills installed | 10 | Count `.claude/skills/*/SKILL.md` |
-| 1+ user-built skill | 10 | Skill names not in: `onboard`, `audit`, `level-up`, `skill-creator`, `skill-builder`, `decision`, `connect`, `connect-check`, `memory-prune`, `scaffold-skill`, `scaffold-agent`, `draft`, `standup` (canonical AIS-OS + Anthropic shipped skills) |
-| 1+ agent defined | 5 | Count `.claude/agents/*.md` ≥ 1 |
+| 3+ skills installed | 10 | Count `.antigravity/skills/*/SKILL.md` |
+| 1+ user-built skill | 10 | Skill names not in: `onboard`, `audit`, `level-up`, `skill-creator`, `skill-builder`, `decision`, `connect`, `connect-check`, `memory-prune`, `scaffold-skill`, `scaffold-agent`, `draft`, `standup` (canonical AIS-OS shipped skills) |
+| 1+ agent defined | 5 | Count `.antigravity/agents/*.md` ≥ 1 |
 
 #### Cadence (25 pts)
 
 | Criterion | Points | How to detect |
 |---|---|---|
-| 1+ recurring/scheduled trigger | 10 | `.claude/settings.json` hooks, OR skill name matches `morning-*` / `daily-*` / `weekly-*` / `monthly-*` / `standup` |
-| Recent activity / usage signal | 10 | Files in `.claude/skills/` modified within 30 days, OR `decisions/log.md` has entry within 30 days |
-| Templates folder populated | 5 | `templates/` or `.claude/templates/` has ≥1 file |
+| 1+ recurring/scheduled trigger | 10 | `.antigravity/settings.json` hooks, OR skill name matches `morning-*` / `daily-*` / `weekly-*` / `monthly-*` / `standup` |
+| Recent activity / usage signal | 10 | Files in `.antigravity/skills/` modified within 30 days, OR `decisions/log.md` has entry within 30 days |
+| Templates folder populated | 5 | `templates/` or `.antigravity/templates/` has ≥1 file |
 
 ### Step 3: Identify top 3 gaps by leverage
 
@@ -120,11 +120,11 @@ For each criterion that lost points: leverage = (points lost) × (impact multipl
 - All others: **1x**
 
 Sort gaps by leverage descending. Take top 3. For each, write a one-line concrete next step:
-- **Need a new skill?** Recommend `skill-creator` (Anthropic) or `skill-builder` (if local), or "write SKILL.md at `.claude/skills/<name>/SKILL.md` with YAML frontmatter."
+- **Need a new skill?** Recommend `skill-creator` or `skill-builder` (if local), or "write SKILL.md at `.antigravity/skills/<name>/SKILL.md` with YAML frontmatter."
 - **Need to log a decision?** "Append to `decisions/log.md`."
-- **Need to reach a tier-1 domain?** Prefer API+script (write `scripts/{tool}_api.py` + save `references/{tool}-api.md`). Recommend `claude mcp add` only if no API path exists.
+- **Need to reach a tier-1 domain?** Prefer API+script (write `scripts/{tool}_api.py` + save `references/{tool}-api.md`). Recommend `antigravity mcp add` only if no API path exists.
 - **Connected tool missing a reference guide?** "Research the API once, save endpoints + auth + common queries to `references/{tool}-api.md`."
-- **Need a recurring trigger?** "Add a hook to `.claude/settings.json`, or write a skill named `daily-*` you run each morning."
+- **Need a recurring trigger?** "Add a hook to `.antigravity/settings.json`, or write a skill named `daily-*` you run each morning."
 
 ### Step 4: Output the report
 
@@ -172,7 +172,7 @@ After printing, ask: "Save this audit to `audits/audit-{date}.md` so you can tra
 
 ## Notes
 
-- **Read-only by default.** Never modify CLAUDE.md, memory, skills, or any project files. Only optional write is the audit report.
+- **Read-only by default.** Never modify GEMINI.md, memory, skills, or any project files. Only optional write is the audit report.
 - **Be flexible about file names.** Don't penalize for using non-canonical names if intent is captured.
 - **Be honest, not generous.** A 95/100 is a flex. Most setups land 40-70.
 - **Don't suggest skills that don't exist.** Point at what's actually available.

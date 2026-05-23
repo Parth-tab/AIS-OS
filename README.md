@@ -1,6 +1,6 @@
-# AIS-OS — AI Operating System starter kit for Claude Code
+# AIS-OS — AI Operating System starter kit for Antigravity
 
-A free, MIT-licensed starter kit that turns Claude Code into your personal **AI Operating System (AIOS)**. Audience: anyone building automations — solopreneurs, small business operators, managers, creators, AI consultants. Pairs with a companion masterclass video.
+A free, MIT-licensed starter kit that turns Antigravity into your personal **AI Operating System (AIOS)**. Audience: anyone building automations — solopreneurs, small business operators, managers, creators, AI consultants. Pairs with a companion masterclass video.
 
 The kit personalizes itself to you via an `/onboard` interview, then gives you two recurring thinking skills (`/audit`, `/level-up`) to keep building leverage week over week.
 
@@ -58,7 +58,7 @@ Full breakdown in `references/3ms-framework.md`. The `/level-up` skill walks you
 
 | # | Layer | One-liner | "This layer is in place" test |
 |---|---|---|---|
-| 1 | **Context** | Knows your business | Fresh Claude session answers "what does this business do and who works here?" without browsing |
+| 1 | **Context** | Knows your business | Fresh Antigravity session answers "what does this business do and who works here?" without browsing |
 | 2 | **Connections** | Reaches your stuff | "What's on my calendar tomorrow and what tasks are due?" → live data, no paste |
 | 3 | **Capabilities** | Knows how to do the work | A short phrase triggers a multi-step workflow that produces an artifact |
 | 4 | **Cadence** | Runs without being asked | Laptop closed. A brief lands in the inbox. A teammate messages it and gets a real answer |
@@ -77,7 +77,7 @@ The kit is intentionally lean. Skills here are ideation prompts and thinking too
 
 | Skill | Type | When to run |
 |---|---|---|
-| `/onboard` | Setup wizard (one-time) | Day 1, immediately after clone. 7-question interview. Generates Day-1 file set + fills `CLAUDE.md`. |
+| `/onboard` | Setup wizard (one-time) | Day 1, immediately after clone. 7-question interview. Generates Day-1 file set + fills `GEMINI.md`. |
 | `/audit` | Recurring thinking skill | Day 7, then weekly. Four-Cs gap report. Read-only. Watch the score climb. |
 | `/level-up` | Recurring thinking skill | Day 14, then weekly. Three Ms interview (Mindset → Method → Machine). One run = one shipped artifact. |
 
@@ -88,7 +88,7 @@ The kit is intentionally lean. Skills here are ideation prompts and thinking too
 ## Quick start
 
 1. **Clone the repo** to a working folder on your machine.
-2. **Open it in Claude Code** and run `/onboard`. Answer the 7 questions honestly. Voice samples must be pasted, not described. Takes ~15 minutes. Day-1 file set drops at the end.
+2. **Open it in Antigravity** and run `/onboard`. Answer the 7 questions honestly. Voice samples must be pasted, not described. Takes ~15 minutes. Day-1 file set drops at the end.
 3. **Use it for a week.** Bring real questions. Make real decisions. Log them via `/decision` (or just append to `decisions/log.md`).
 4. **Day 7:** run `/audit`. Read the Four-Cs gap report. Pick one gap to close.
 5. **Day 14:** run `/level-up`. The Three Ms interview surfaces one automation worth building. Build it.
@@ -101,7 +101,7 @@ The kit is intentionally lean. Skills here are ideation prompts and thinking too
 ```
 AIS-OS/
 ├── README.md
-├── CLAUDE.md                        ← Your operating manual (filled by /onboard)
+├── GEMINI.md                        ← Your operating manual (filled by /onboard)
 ├── EXPANSIONS.md                    ← What to add as you grow
 ├── LICENSE
 ├── .gitignore
@@ -113,14 +113,14 @@ AIS-OS/
 ├── decisions/
 │   └── log.md                       ← Append-only record of what was decided and why
 ├── archives/                        ← Old stuff. Don't delete. Move here.
-└── .claude/
+└── .antigravity/
     └── skills/
         ├── onboard/SKILL.md
         ├── audit/SKILL.md
         └── level-up/SKILL.md
 ```
 
-See `EXPANSIONS.md` for what to add as you grow (`projects/`, `templates/`, `scripts/`, `.claude/agents/`, sub-OS folders, etc.).
+See `EXPANSIONS.md` for what to add as you grow (`projects/`, `templates/`, `scripts/`, `.antigravity/agents/`, sub-OS folders, etc.).
 
 ---
 

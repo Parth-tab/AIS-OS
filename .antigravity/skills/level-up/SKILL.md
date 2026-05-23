@@ -31,7 +31,7 @@ This is the brain-rewire mechanism. The kit doesn't need cron jobs to anchor beh
 - `connections.md` — what's reachable, by what mechanism
 - `references/3ms-framework.md` — the framework (used to quote principles back)
 - `decisions/log.md` — recent decisions (what's already shipped or considered)
-- `.claude/skills/*/SKILL.md` frontmatter — what capabilities exist
+- `.antigravity/skills/*/SKILL.md` frontmatter — what capabilities exist
 - Recent `audits/audit-{date}.md` if present
 
 ## Execution — three phases
@@ -85,6 +85,8 @@ If the user can't articulate any of the five: *"If you can't explain it to a per
 
 **Default = lowest level that solves the problem.** Push back on L4 unless the user has explicitly run lower levels first. *"Workflows beat agents. If a decision doesn't HAVE to be made by AI, don't let AI make it."*
 
+Push autonomy up only when you've proven the lower level works.
+
 **Step 5 — Tie to a KPI.** Which of the Three Buckets does this move?
 - More customers
 - More value per customer
@@ -106,7 +108,7 @@ Ask: *"How do you want to ship this?"* Options ordered by Boring-is-Beautiful de
 **Default selected = highest non-AI option that solves the problem.** User has to explicitly choose more autonomy.
 
 Once chosen, route to the appropriate scaffolder:
-- `skill-creator` if available globally (Anthropic-shipped)
+- `skill-creator` if available globally
 - `skill-builder` if user has it locally
 - Otherwise write a SKILL.md / agent file inline with frontmatter, location, and contents
 
@@ -146,15 +148,3 @@ Every `/level-up` run produces:
 7. **Bike Method ships into every artifact.** `bike-method-phase: 1` in frontmatter.
 8. **Read-only on user files except `decisions/log.md` and the new artifact.** Don't modify other existing files.
 9. **Trademark + attribution on output.** Every report and every scaffolded artifact references the framework.
-
-## Verification (for the implementer)
-
-- **Dry run on Nate's Herk-2** with no prompt. Expected: skill surfaces 2-3 candidates pulled from his recent activity, priorities, and top_pain. Generic output ("you should build a brief") = fail.
-- **Eliminate-first test.** Feed an obviously eliminate-able candidate. Expected: skill suggests Eliminate, exits, logs the win.
-- **L4 push-back test.** User asks for autonomous email-replier on first build. Expected: skill insists on L1/L2 first, won't ship L4 without explicit override.
-- **Boring-is-Beautiful test.** Candidate solvable with deterministic Python. Expected: skill recommends `(2) deterministic skill` as default.
-- **Bike Method anti-skip.** User scaffolds, asks to advance to Phase 4 immediately. Expected: skill makes them read what each phase means and confirm they've validated lower phases.
-
----
-
-> *The Three Ms of AI™ is a trademark of Nate Herk. © 2026 Nate Herk. All rights reserved.*
