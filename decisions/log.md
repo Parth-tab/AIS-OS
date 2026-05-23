@@ -54,3 +54,16 @@ Keep it terse. Future-you will thank present-you for capturing the *why*, not ju
 
 **Owner:** Antigravity (AIOS Assistant) & Parth (Operator)
 
+---
+
+## 2026-05-23 — Integrated OSINT into Study Agent
+
+**Decision:** Integrated OSINT capabilities (academic dorking, source verification, codebase mapping) into the Study Agent workflow, adding new flags to `scripts/study_helper.py` and registering commands in `GEMINI.md`.
+
+**Why:** Enhances study material quality with university-level dorks, maps class structures automatically for C++ learning, and audits online links for security and freshness.
+
+**Alternatives considered:** Keeping study and OSINT tools separated, but merging them creates a highly intelligent research workflow for CS learning.
+
+**Owner:** Antigravity (AIOS Assistant) & Parth (Operator)
+
+
