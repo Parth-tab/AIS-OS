@@ -41,3 +41,16 @@ Keep it terse. Future-you will thank present-you for capturing the *why*, not ju
 **Alternatives considered:** Keeping each tool separate, but a unified workflow is far lower friction and avoids API/login bottlenecks by utilizing robust fallback loops.
 
 **Owner:** Antigravity (AIOS Assistant) & Parth (Operator)
+
+---
+
+## 2026-05-23 — Created `/recon` and `/dork` OSINT investigator skill
+
+**Decision:** Implemented the `investigating-osint` skill to run advanced open-source intelligence gathering and research workflows locally in the workspace, registering the command vectors `/recon` and `/dork` in [GEMINI.md](file:///E:/AIOS/AIS-OS/GEMINI.md).
+
+**Why:** Equips the AIOS with a highly structured playbook for general-purpose research, digital footprint analysis, and structured reporting, while establishing strong OPSEC checklists and ethical boundaries.
+
+**Alternatives considered:** Relying on default chat instructions, which leads to inconsistent reporting formats and loose OPSEC considerations.
+
+**Owner:** Antigravity (AIOS Assistant) & Parth (Operator)
+

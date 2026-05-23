@@ -14,6 +14,8 @@ Read `references/3ms-framework.md` once. It's how Parth thinks about AI work. Mi
 - `/audit` — Four-Cs gap report. Run on Day 7, then weekly. Watch your score climb.
 - `/level-up` — Weekly 3Ms interview. Find one automation, scope it, ship it. One per week.
 - `/study` — Runs the consolidated Study Sheet & Code Generator. Use as `generating-study-guides` to scaffold learning templates.
+- `/recon` — Runs the OSINT reconnaissance and investigation playbook (`investigating-osint`).
+- `/dork` — Generates advanced Google search operator queries for intelligence gathering.
 
 ## Where things live
 
