@@ -4,6 +4,11 @@ import sys
 import json
 import re
 import argparse
+import time
+import urllib.request
+import urllib.parse
+import yaml
+from source_validator import validate_url, load_config
 
 def extract_youtube_id(url):
     pattern = r'(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})'
@@ -21,13 +26,11 @@ def fetch_youtube_transcript(video_id):
         return f"[Error fetching transcript: {str(e)}]"
 
 def load_local_context(course, topic):
-    # Look in context/courses/<course>.md or context/courses/<course>_<topic>.md
     workspace_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     search_paths = [
         os.path.join(workspace_root, 'context', 'courses', f"{course.lower()}.md"),
         os.path.join(workspace_root, 'context', 'courses', f"{course.lower()}_{topic.lower().replace(' ', '_')}.md")
     ]
-    
     for path in search_paths:
         if os.path.exists(path):
             with open(path, 'r', encoding='utf-8') as f:
@@ -44,13 +47,135 @@ def prompt_for_clipboard():
     except Exception as e:
         return f"[Error reading console: {str(e)}]"
 
+def get_dork_templates(course, config_yaml):
+    templates = config_yaml.get("dork_templates", {})
+    course_key = course.lower()
+    if course_key in templates:
+        return templates[course_key]
+    return templates.get("default", [])
+
+def scrape_duckduckgo(query):
+    url = f"https://html.duckduckgo.com/html/?q={urllib.parse.quote(query)}"
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+    }
+    try:
+        req = urllib.request.Request(url, headers=headers)
+        with urllib.request.urlopen(req, timeout=5) as response:
+            html = response.read().decode('utf-8')
+            uddg_links = re.findall(r'uddg=([^"&]+)', html)
+            links = []
+            for link in uddg_links:
+                decoded = urllib.parse.unquote(link)
+                if decoded.startswith("http") and "duckduckgo.com" not in decoded:
+                    links.append(decoded)
+            return list(dict.fromkeys(links))[:5]
+    except Exception as e:
+        print(f"Warning: DuckDuckGo search failed: {e}", file=sys.stderr)
+        return []
+
+def load_cache(cache_path):
+    if os.path.exists(cache_path):
+        try:
+            with open(cache_path, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return {}
+
+def save_cache(cache_path, cache_data):
+    try:
+        os.makedirs(os.path.dirname(cache_path), exist_ok=True)
+        with open(cache_path, 'w', encoding='utf-8') as f:
+            json.dump(cache_data, f, indent=2, ensure_ascii=False)
+    except Exception:
+        pass
+
+def run_dork_pipeline(course, topic, config_yaml):
+    workspace_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    
+    # Load Cache
+    cache_settings = config_yaml.get("cache_settings", {})
+    cache_path = os.path.join(workspace_root, cache_settings.get("search_cache_path", "study/cache/dork_results.json"))
+    search_ttl = cache_settings.get("search_ttl_days", 30) * 86400
+    cache = load_cache(cache_path)
+    
+    cache_key = f"{course.lower()}:{topic.lower()}"
+    now = time.time()
+    
+    if cache_key in cache:
+        cached_entry = cache[cache_key]
+        if now - cached_entry.get("timestamp", 0) < search_ttl:
+            print("Found fresh cached dork results.")
+            return cached_entry.get("results", [])
+            
+    print(f"Generating search dorks for topic '{topic}'...")
+    templates = get_dork_templates(course, config_yaml)
+    
+    all_links = []
+    failed_queries = []
+    
+    for temp in templates:
+        query = temp.format(topic=topic)
+        print(f"Executing search: {query}")
+        links = scrape_duckduckgo(query)
+        if links:
+            all_links.extend(links)
+            # Randomized jitter delay between queries to prevent throttling
+            time.sleep(1)
+        else:
+            failed_queries.append(query)
+            
+    # Clean and validate links
+    unique_links = list(dict.fromkeys(all_links))
+    validated_sources = []
+    
+    val_config = load_config()
+    for link in unique_links:
+        print(f"Validating source trust: {link}")
+        res = validate_url(link, val_config)
+        # Keep only accessible and high/medium reputation files
+        if res["accessible"] and res["reputation"] in ["HIGH", "MEDIUM"]:
+            validated_sources.append({
+                "url": link,
+                "reputation": res["reputation"],
+                "archive_url": res["archive_url"]
+            })
+            
+    # Interactive Fallback: If searches failed or returned empty results
+    if failed_queries or not validated_sources:
+        print("\n--- [Interactive Fallback] Query Execution Blocked or Empty ---")
+        print("Alternative queries to run manually in your browser:")
+        for q in failed_queries:
+            encoded_q = urllib.parse.quote(q)
+            print(f"  - DuckDuckGo: https://html.duckduckgo.com/html/?q={encoded_q}")
+            print(f"  - Google: https://google.com/search?q={encoded_q}")
+            
+    # Save cache
+    cache[cache_key] = {
+        "timestamp": now,
+        "results": validated_sources
+    }
+    save_cache(cache_path, cache)
+    
+    return validated_sources
+
 def main():
     parser = argparse.ArgumentParser(description="Gather context for AIOS study generator.")
     parser.add_argument("--topic", required=True, help="Topic name")
     parser.add_argument("--course", required=True, help="Course name")
     parser.add_argument("--youtube", help="Optional YouTube URL")
     parser.add_argument("--interactive", action="store_true", help="Prompt for manual paste")
+    parser.add_argument("--dork", action="store_true", help="Perform academic dork searches")
+    parser.add_argument("--map-dir", help="Directory path to scan and map C++ classes")
     args = parser.parse_args()
+
+    workspace_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    config_yaml_path = os.path.join(workspace_root, 'context', 'study_config.yaml')
+    
+    with open(config_yaml_path, 'r', encoding='utf-8') as f:
+        config_yaml = yaml.safe_load(f)
 
     context_data = {
         "topic": args.topic,
@@ -58,7 +183,9 @@ def main():
         "youtube_url": args.youtube or "",
         "youtube_transcript": "",
         "local_context": "",
-        "interactive_context": ""
+        "interactive_context": "",
+        "dork_results": [],
+        "codebase_map": ""
     }
 
     # 1. Fetch YouTube Transcript
@@ -80,8 +207,19 @@ def main():
     if args.interactive:
         context_data["interactive_context"] = prompt_for_clipboard()
 
-    # 4. Save consolidated output
-    workspace_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    # 4. Optional OSINT Dorking Sweep
+    if args.dork:
+        context_data["dork_results"] = run_dork_pipeline(args.course, args.topic, config_yaml)
+
+    # 5. Optional Codebase Dependency Map
+    if args.map_dir:
+        from code_mapper import CodebaseMapper
+        print(f"Scanning codebase for dependency mapping: {args.map_dir}")
+        mapper = CodebaseMapper(args.map_dir)
+        mapper.scan_files()
+        context_data["codebase_map"] = mapper.generate_mermaid()
+
+    # 6. Save consolidated output
     output_dir = os.path.join(workspace_root, 'study')
     os.makedirs(output_dir, exist_ok=True)
     

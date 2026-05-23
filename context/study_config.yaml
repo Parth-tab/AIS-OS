@@ -1,0 +1,38 @@
+# Study and OSINT Agent Configuration File
+
+dork_templates:
+  default:
+    - 'site:edu "{topic}" filetype:pdf'
+    - 'site:github.com "{topic}" language:cpp'
+    - 'site:wikipedia.org "{topic}"'
+    - 'site:geeksforgeeks.org "{topic}"'
+  cs50:
+    - 'site:cdn.cs50.net/2023/fall/lectures/ "{topic}"'
+    - 'site:cs50.harvard.edu/x/2024/notes/ "{topic}"'
+    - 'site:github.com/code50/ "{topic}"'
+
+search_settings:
+  engines:
+    - name: duckduckgo
+      url: "https://html.duckduckgo.com/html/?q={query}"
+    - name: bing
+      url: "https://www.bing.com/search?q={query}"
+
+cache_settings:
+  reputation_ttl_days: 30
+  search_ttl_days: 30
+  reputation_cache_path: "study/cache/domain_reputations.json"
+  search_cache_path: "study/cache/dork_results.json"
+
+domain_reputations:
+  harvard.edu: "HIGH"
+  mit.edu: "HIGH"
+  stanford.edu: "HIGH"
+  wikipedia.org: "HIGH"
+  github.com: "HIGH"
+  geeksforgeeks.org: "MEDIUM"
+  w3schools.com: "MEDIUM"
+  stackoverflow.com: "HIGH"
+  medium.com: "LOW"
+  blogspot.com: "LOW"
+  wordpress.com: "LOW"

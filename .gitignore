@@ -7,6 +7,7 @@ node_modules/
 .antigravity/settings.local.json
 audits/
 study/temp_context.json
+study/cache/
 credentials.json
 token.json
 *.exe
