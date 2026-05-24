@@ -8,7 +8,7 @@ import time
 import urllib.request
 import urllib.parse
 import yaml
-from source_validator import validate_url, load_config
+from utils.source_validator import validate_url, load_config
 
 def extract_youtube_id(url):
     pattern = r'(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})'
@@ -177,7 +177,7 @@ def main():
     args = parser.parse_args()
 
     workspace_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    config_yaml_path = os.path.join(workspace_root, 'context', 'study_config.yaml')
+    config_yaml_path = os.path.join(workspace_root, 'config', 'study_config.yaml')
     
     with open(config_yaml_path, 'r', encoding='utf-8') as f:
         config_yaml = yaml.safe_load(f)
@@ -218,7 +218,7 @@ def main():
 
     # 5. Optional Codebase Dependency Map
     if args.map_dir:
-        from code_mapper import CodebaseMapper
+        from utils.code_mapper import CodebaseMapper
         print(f"Scanning codebase for dependency mapping: {args.map_dir}")
         mapper = CodebaseMapper(args.map_dir)
         mapper.scan_files()
@@ -228,7 +228,7 @@ def main():
     output_dir = os.path.join(workspace_root, 'study')
     os.makedirs(output_dir, exist_ok=True)
     
-    output_path = os.path.join(output_dir, 'temp_context.json')
+    output_path = os.path.join(output_dir, 'cache', 'temp_context.json')
     with open(output_path, 'w', encoding='utf-8') as f:
         json.dump(context_data, f, indent=2, ensure_ascii=False)
     
@@ -257,8 +257,8 @@ def main():
             files_to_sync.append(checklist_path)
 
         if files_to_sync:
-            sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-            from gdrive_helper import sync_study_artifacts
+            sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            from api.gdrive_helper import sync_study_artifacts
             sync_study_artifacts(args.course, args.topic, files_to_sync)
         else:
             print(

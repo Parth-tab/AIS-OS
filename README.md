@@ -105,9 +105,9 @@ AIS-OS/
 ├── EXPANSIONS.md                    ← What to add as you grow
 ├── LICENSE
 ├── .gitignore
-├── aios-intake.md                   ← Source-of-truth for /onboard. Edit + re-run any time.
-├── connections.md                   ← Registry of every system your AIOS can reach
-├── context/                         ← About you, your business (filled by /onboard)
+├── context/                       ← About you, your business
+│   ├── aios-intake.md             ← Source-of-truth for /onboard. Edit + re-run any time.
+│   └── connections.md             ← Registry of every system your AIOS can reach
 ├── references/
 │   └── 3ms-framework.md             ← The operator brain
 ├── decisions/

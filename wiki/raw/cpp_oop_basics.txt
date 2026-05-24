@@ -1,0 +1,20 @@
+C++ OOP & Memory Basics
+Source: Custom Note
+Date: 2026-05-23
+Author: Parth
+
+In C++, Object-Oriented Programming (OOP) is centered around classes and objects. A class is a blueprint, and an object is an instance of a class.
+
+Memory Allocation:
+Objects can be allocated on the Stack or the Heap.
+1. Stack Allocation:
+   - Example: `Box myBox;`
+   - Memory is managed automatically. When the object goes out of scope, it is deallocated.
+   - Faster access.
+2. Heap Allocation:
+   - Example: `Box* myBox = new Box();`
+   - Memory is managed manually using `new` and must be freed using `delete` to prevent memory leaks.
+   - Objects persist until explicitly deleted.
+   - Slower access than the stack, but allows dynamic size allocation.
+
+Encapsulation is a core concept where data (properties) and methods (behaviors) are bundled together into a single unit (class), and access is restricted using access specifiers: `public`, `private`, and `protected`. By default, class members are `private`.

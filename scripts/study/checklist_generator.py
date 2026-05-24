@@ -119,8 +119,8 @@ def main():
 
     # Optional Drive sync
     if args.drive_sync:
-        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-        from gdrive_helper import sync_study_artifacts
+        sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        from api.gdrive_helper import sync_study_artifacts
         sync_study_artifacts(args.course, args.topic, [out_path])
 
     return out_path

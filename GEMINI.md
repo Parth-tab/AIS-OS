@@ -13,7 +13,7 @@ Read `references/3ms-framework.md` once. It's how Parth thinks about AI work. Mi
 
 ## Your skills
 
-- `/onboard` — already run if you're seeing this filled in. Re-run any time to refresh from an edited `aios-intake.md`.
+- `/onboard` — already run if you're seeing this filled in. Re-run any time to refresh from an edited `context/aios-intake.md`.
 - `/audit` — Four-Cs gap report. Run on Day 7, then weekly. Watch your score climb.
 - `/level-up` — Weekly 3Ms interview. Find one automation, scope it, ship it. One per week.
 - `/study` — Runs the consolidated Study Sheet & Code Generator. Use as `generating-study-guides` to scaffold learning templates.
@@ -32,7 +32,7 @@ Read `references/3ms-framework.md` once. It's how Parth thinks about AI work. Mi
 
 - `context/` — about you, your business, your priorities (filled by `/onboard`)
 - `references/` — frameworks, voice samples, API guides as you connect tools
-- `connections.md` — registry of every system your AIOS can reach
+- `context/connections.md` — registry of every system your AIOS can reach
 - `decisions/log.md` — append-only record of decisions and why
 - `archives/` — old stuff. Don't delete. Move here.
 - `wiki/` — your compounding Second Brain containing raw sources, index, log, and wiki pages.

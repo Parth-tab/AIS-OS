@@ -17,7 +17,7 @@
 - External APIs: Google Drive API, Notion API, Telegram Bot API, Wayback Machine API
 - Search: DuckDuckGo HTML fallback (no API key required)
 - Caching: Local JSON files in `study/cache/`
-- Config: `context/study_config.yaml` (single source of truth for search/domain settings)
+- Config: `config/study_config.yaml` (single source of truth for search/domain settings)
 
 **Repo layout:**
 ```
@@ -46,8 +46,14 @@ AIS-OS/
 ├── archives/                # Old content — move here, never delete
 ├── study/                   # Generated study outputs (gitignored: temp_context.json, cache/)
 │   └── templates/           # Skeleton templates; agent fills {{TOKEN}} placeholders
-├── connections.md           # Registry of every connected system
-├── aios-intake.md           # Onboarding intake form
+├── wiki/                    # LLM Wiki Second Brain
+│   ├── raw/                 # Immutable raw source documents
+│   ├── wiki/                # LLM-written wiki pages (sources, concepts, entities, syntheses)
+│   ├── index.md             # Content catalog of all wiki files
+│   └── log.md               # Chronological log of wiki actions
+│   └── connections.md           # Registry of every connected system
+├── context/
+│   ├── aios-intake.md           # Onboarding intake form
 ├── GEMINI.md                # Gemini CLI entry point and slash command registry
 └── AGENTS.md                # This file
 ```
@@ -68,6 +74,9 @@ AIS-OS/
 - `references/` — Read-only reference files. Never overwrite; append or archive.
 - `decisions/log.md` — Append-only. Never edit past entries. Add new ones at the bottom.
 - `archives/` — Graveyard for retired files. Move here, never delete.
+- `wiki/raw/` — Immutable source files. Never edit, modify, or auto-generate files in this folder.
+- `wiki/wiki/` — LLM-maintained directory for pages. Must use YAML frontmatter and absolute file links.
+- `wiki/index.md` & `wiki/log.md` — Catalogs and chronological logs. Must be updated with every wiki modification.
 
 **Cross-boundary rules:**
 - `scripts/` must never import from `.antigravity/` or `context/` except via file path reads.
@@ -82,29 +91,29 @@ Before marking any task complete, run ALL applicable checks:
 
 ```powershell
 # Syntax check all Python scripts
-python -m py_compile scripts/study_helper.py
-python -m py_compile scripts/code_mapper.py
-python -m py_compile scripts/source_validator.py
-python -m py_compile scripts/notion_helper.py
-python -m py_compile scripts/gdrive_helper.py
-python -m py_compile scripts/telegram_helper.py
+python -m py_compile scripts/study/study_helper.py
+python -m py_compile scripts/utils/code_mapper.py
+python -m py_compile scripts/utils/source_validator.py
+python -m py_compile scripts/api/notion_helper.py
+python -m py_compile scripts/api/gdrive_helper.py
+python -m py_compile scripts/api/telegram_helper.py
 
 # End-to-end smoke test (code mapper)
-python scripts/code_mapper.py <any_cpp_directory>
+python scripts/utils/code_mapper.py <any_cpp_directory>
 
 # End-to-end smoke test (source validator)
-python scripts/source_validator.py "https://cs50.harvard.edu/x/2024/notes/5/"
+python scripts/utils/source_validator.py "https://cs50.harvard.edu/x/2024/notes/5/"
 
 # Full pipeline smoke test
-python scripts/study_helper.py --topic "Test" --course "CS50"
+python scripts/study/study_helper.py --topic "Test" --course "CS50"
 ```
 
 For **new skill additions**, additionally:
 - Verify the `SKILL.md` has valid YAML frontmatter (`name`, `description` keys)
 - Register the slash command in `GEMINI.md` under `## Your skills`
 
-For **config changes** (`context/study_config.yaml`):
-- Verify `study_helper.py` loads and parses cleanly with `python -c "import yaml; yaml.safe_load(open('context/study_config.yaml'))"`
+For **config changes** (`config/study_config.yaml`):
+- Verify `study_helper.py` loads and parses cleanly with `python -c "import yaml; yaml.safe_load(open('config/study_config.yaml'))"`
 
 A task is NOT done until all applicable commands pass with zero errors.
 
@@ -124,12 +133,12 @@ A task is NOT done until all applicable commands pass with zero errors.
 
 - Cache files live in `study/cache/` (gitignored). Format: JSON. Key pattern: `"<course>:<topic>"`.
 - Cache entries must store a `timestamp` (Unix float) alongside results.
-- TTL is read from `context/study_config.yaml` `cache_settings.search_ttl_days` — never hardcode TTL values.
+- TTL is read from `config/study_config.yaml` `cache_settings.search_ttl_days` — never hardcode TTL values.
 - If cache is stale or missing, fetch fresh data. If fetch fails, fall back to printing manual search URLs.
 
 ### Config Layer
 
-- `context/study_config.yaml` is the **single source of truth** for dork templates, search engines, and domain reputations.
+- `config/study_config.yaml` is the **single source of truth** for dork templates, search engines, and domain reputations.
 - Adding a new course's dork templates = add a new key under `dork_templates:` in the YAML. No code change required.
 - Adding a new domain reputation = add a new entry under `domain_reputations:` in the YAML. No code change required.
 
@@ -161,9 +170,9 @@ A task is NOT done until all applicable commands pass with zero errors.
 | JSON read/write | `json` (built-in) |
 | File path ops | `os.path` (built-in) |
 | Regex | `re` (built-in) |
-| Notion API | `scripts/notion_helper.py` — always go through this wrapper |
-| Google Drive API | `scripts/gdrive_helper.py` — always go through this wrapper |
-| Telegram | `scripts/telegram_helper.py` — always go through this wrapper |
+| Notion API | `scripts/api/notion_helper.py` — always go through this wrapper |
+| Google Drive API | `scripts/api/gdrive_helper.py` — always go through this wrapper |
+| Telegram | `scripts/api/telegram_helper.py` — always go through this wrapper |
 
 **Never introduce a new `pip` dependency without asking first.** Standard library is always preferred.
 
@@ -202,7 +211,7 @@ Types: `feat` | `fix` | `refactor` | `chore` | `docs` | `skill`
 **Never:**
 - Force-push to `main`
 - Commit `.env`, `credentials.json`, `token.json`, or `study/cache/` contents
-- Commit `study/temp_context.json`
+- Commit `study/cache/temp_context.json`
 - Change files unrelated to the current task in a single commit
 
 **Before every push:**
@@ -216,8 +225,8 @@ Types: `feat` | `fix` | `refactor` | `chore` | `docs` | `skill`
 When something is broken, follow this sequence:
 
 1. **Reproduce** — run the exact failing command and capture the full error output
-2. **Isolate** — run the sub-script in isolation (`python scripts/source_validator.py <url>`) to narrow the failure
-3. **Inspect** — check Python traceback, stderr output, and the contents of `study/temp_context.json` if the pipeline ran
+2. **Isolate** — run the sub-script in isolation (`python scripts/utils/source_validator.py <url>`) to narrow the failure
+3. **Inspect** — check Python traceback, stderr output, and the contents of `study/cache/temp_context.json` if the pipeline ran
 4. **Hypothesize** — form one specific theory (e.g., "cache key mismatch") before changing code
 5. **Fix** — make the minimal change that addresses the root cause
 6. **Verify** — re-run the smoke test that originally failed; confirm no regressions in other scripts
@@ -249,6 +258,7 @@ A task is complete ONLY when ALL of the following are true:
 - [ ] If a new slash command was added: registered in `GEMINI.md`
 - [ ] If a new config key was added: `study_config.yaml` updated
 - [ ] If a decision was made: appended to `decisions/log.md`
+- [ ] If a wiki file was created or modified: `wiki/index.md` is updated, links are verified to use the absolute `file:///` schema, and an entry is added to `wiki/log.md`
 - [ ] No unrelated files changed in the same commit
 - [ ] `git status` is clean (or only contains expected gitignored files)
 

@@ -61,8 +61,8 @@ def get_credentials():
     """Load or refresh credentials, triggering browser OAuth if needed."""
     creds = None
     workspace_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    token_path = os.path.join(workspace_root, "token.json")
-    creds_path = os.path.join(workspace_root, "credentials.json")
+    token_path = os.path.join(workspace_root, ".secrets", "token.json")
+    creds_path = os.path.join(workspace_root, ".secrets", "credentials.json")
 
     if os.path.exists(token_path):
         creds = Credentials.from_authorized_user_file(token_path, SCOPES)
