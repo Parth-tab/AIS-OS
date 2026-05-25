@@ -6,6 +6,8 @@ The kit personalizes itself to you via an `/onboard` interview, then gives you t
 
 > **AIS-OS** stands for **AI Automation Society OS** — the way Nate designed this AIOS to be set up for members of his community, [AI Automation Society](https://www.skool.com/ai-automation-society). The kit is universal (it works for anyone), but the structure mirrors how AIS members run their own businesses on top of it.
 
+![AIS-OS System Architecture](architecture.svg)
+
 ---
 
 ## The litmus test
